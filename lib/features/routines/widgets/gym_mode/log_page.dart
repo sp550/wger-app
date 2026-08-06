@@ -395,7 +395,7 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
     // A failed write is intentionally left to propagate to the global
     // error handler; the success path below is then skipped.
     await ref.read(workoutLogProvider).addEntry(log);
-    if (!context.mounted) {
+    if (!mounted) {
       return;
     }
 
@@ -406,7 +406,7 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
     } catch (_) {
       // Haptics are best-effort; swallow plugin failures.
     }
-    if (!context.mounted) {
+    if (!mounted) {
       return;
     }
     showSnackbar(
