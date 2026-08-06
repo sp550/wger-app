@@ -41,6 +41,17 @@ class _HomeTabsScreenState extends ConsumerState<HomeTabsScreen>
   int _selectedIndex = 0;
   bool _isWideScreen = false;
 
+  /// The tab bodies are built once and kept alive in an [IndexedStack] so
+  /// switching tabs never loses scroll position, form input or loaded data:
+  /// no dead ends, no jarring rebuilds.
+  late final List<Widget> _screens = [
+    const DashboardScreen(),
+    const RoutineListScreen(),
+    const NutritionalPlansScreen(),
+    const WeightScreen(),
+    const GalleryScreen(),
+  ];
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -55,27 +66,22 @@ class _HomeTabsScreenState extends ConsumerState<HomeTabsScreen>
     });
   }
 
-  final _screenList = [
-    const DashboardScreen(),
-    const RoutineListScreen(),
-    const NutritionalPlansScreen(),
-    const WeightScreen(),
-    const GalleryScreen(),
-  ];
-
   @override
   Widget build(BuildContext context) {
     final destinations = [
       NavigationDestination(
-        icon: const Icon(Icons.home),
+        icon: const Icon(Icons.home_outlined),
+        selectedIcon: const Icon(Icons.home),
         label: AppLocalizations.of(context).labelDashboard,
       ),
       NavigationDestination(
-        icon: const Icon(Icons.fitness_center),
+        icon: const Icon(Icons.fitness_center_outlined),
+        selectedIcon: const Icon(Icons.fitness_center),
         label: AppLocalizations.of(context).labelBottomNavWorkout,
       ),
       NavigationDestination(
-        icon: const Icon(Icons.restaurant),
+        icon: const Icon(Icons.restaurant_outlined),
+        selectedIcon: const Icon(Icons.restaurant),
         label: AppLocalizations.of(context).labelBottomNavNutrition,
       ),
       NavigationDestination(
@@ -83,18 +89,21 @@ class _HomeTabsScreenState extends ConsumerState<HomeTabsScreen>
         label: AppLocalizations.of(context).weight,
       ),
       NavigationDestination(
-        icon: const Icon(Icons.photo_library),
+        icon: const Icon(Icons.photo_library_outlined),
+        selectedIcon: const Icon(Icons.photo_library),
         label: AppLocalizations.of(context).gallery,
       ),
     ];
 
-    /// Navigation bar for narrow screens
+    /// Navigation bar for narrow screens. Labels stay visible so the tabs are
+    /// obvious; the bar is taller for comfortable 48dp+ tap targets.
     Widget getNavigationBar() {
       return NavigationBar(
+        height: 72,
         destinations: destinations,
         onDestinationSelected: _onItemTapped,
         selectedIndex: _selectedIndex,
-        labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
+        labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
       );
     }
 
@@ -109,6 +118,7 @@ class _HomeTabsScreenState extends ConsumerState<HomeTabsScreen>
             .map(
               (d) => NavigationRailDestination(
                 icon: d.icon,
+                selectedIcon: d.selectedIcon,
                 label: Text(d.label),
               ),
             )
@@ -120,7 +130,12 @@ class _HomeTabsScreenState extends ConsumerState<HomeTabsScreen>
       body: Row(
         children: [
           if (_isWideScreen) getNavigationRail(),
-          Expanded(child: _screenList.elementAt(_selectedIndex)),
+          Expanded(
+            child: IndexedStack(
+              index: _selectedIndex,
+              children: _screens,
+            ),
+          ),
         ],
       ),
       bottomNavigationBar: _isWideScreen ? null : getNavigationBar(),

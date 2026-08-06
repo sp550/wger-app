@@ -24,6 +24,8 @@ import 'package:flutter_riverpod/misc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wger/core/network/network_provider.dart';
 import 'package:wger/core/widgets/dashboard/widgets/routines.dart';
+import 'package:wger/features/routines/models/day.dart';
+import 'package:wger/features/routines/models/day_data.dart';
 import 'package:wger/features/routines/models/routine.dart';
 import 'package:wger/features/routines/providers/routines_notifier.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
@@ -85,7 +87,7 @@ void main() {
     await tester.pump();
     await tester.pump();
 
-    expect(find.text('3 day workout'), findsOneWidget);
+    expect(find.textContaining('3 day workout'), findsOneWidget);
     expect(find.byType(CircularProgressIndicator), findsWidgets);
     // The detail toggle is replaced by the spinner while loading.
     expect(find.byIcon(Icons.info_outline), findsNothing);
@@ -97,7 +99,7 @@ void main() {
     await tester.pumpWidget(renderWidget(routine: getTestRoutine()));
     await tester.pumpAndSettle();
 
-    expect(find.text('3 day workout'), findsOneWidget);
+    expect(find.textContaining('3 day workout'), findsOneWidget);
     expect(find.byType(CircularProgressIndicator), findsNothing);
     expect(find.byIcon(Icons.info_outline), findsOneWidget);
   });
@@ -114,5 +116,38 @@ void main() {
     // The "go to detail page" button is disabled while locked.
     final goToDetail = tester.widget<TextButton>(find.byType(TextButton));
     expect(goToDetail.onPressed, isNull);
+  });
+
+  testWidgets('shows a one-tap start button for the hero workout day', (tester) async {
+    // getTestRoutine() has no entry for today, so the card falls back to the
+    // next scheduled (non-rest) day and still offers a start button.
+    await tester.pumpWidget(renderWidget(routine: getTestRoutine()));
+    await tester.pumpAndSettle();
+
+    final start = tester.widget<FilledButton>(
+      find.byKey(const ValueKey('dashboard-start-workout')),
+    );
+    expect(start.onPressed, isNotNull);
+    expect(find.text('Start'), findsOneWidget);
+  });
+
+  testWidgets('shows a rest day instead of a start button when today is a rest day',
+      (tester) async {
+    final routine = getTestRoutine().copyWith(
+      dayData: [
+        DayData(
+          iteration: 1,
+          date: DateTime.now(),
+          label: '',
+          day: Day(id: 1, routineId: 1, name: 'Rest', isRest: true),
+        ),
+      ],
+    );
+
+    await tester.pumpWidget(renderWidget(routine: routine));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Rest day'), findsOneWidget);
+    expect(find.byKey(const ValueKey('dashboard-start-workout')), findsNothing);
   });
 }

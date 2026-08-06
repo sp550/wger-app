@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/core/date.dart';
@@ -25,8 +26,10 @@ import 'package:wger/core/widgets/async_value_widget.dart';
 import 'package:wger/core/widgets/core.dart';
 import 'package:wger/core/widgets/dashboard/widgets/nothing_found.dart';
 import 'package:wger/core/widgets/error.dart';
+import 'package:wger/features/exercises/models/exercise.dart';
 import 'package:wger/features/routines/models/day_data.dart';
 import 'package:wger/features/routines/models/routine.dart';
+import 'package:wger/features/routines/models/set_config_data.dart';
 import 'package:wger/features/routines/providers/routines_notifier.dart';
 import 'package:wger/features/routines/screens/gym_mode.dart';
 import 'package:wger/features/routines/screens/routine_screen.dart';
@@ -34,6 +37,9 @@ import 'package:wger/features/routines/widgets/forms/routine.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/theme/theme.dart';
 
+/// The hero card of the dashboard: today's workout (or the next scheduled
+/// one), with a one-tap "Start" button that drops the user straight into
+/// gym mode.
 class DashboardRoutineWidget extends ConsumerStatefulWidget {
   const DashboardRoutineWidget();
 
@@ -72,9 +78,187 @@ class _DashboardRoutineWidgetState extends ConsumerState<DashboardRoutineWidget>
     );
   }
 
+  /// Starts gym mode for [dayData] (one tap from the dashboard).
+  void _startGymMode(BuildContext context, DayData dayData) {
+    final day = dayData.day!;
+    Navigator.of(context).pushNamed(
+      GymModeScreen.routeName,
+      arguments: GymModeArguments(
+        day.routineId,
+        day.id!,
+        dayData.iteration,
+      ),
+    );
+  }
+
+  /// Compact exercise summary: one row per exercise, with the set/reps/weight
+  /// information right-aligned and legible.
+  Widget _buildExerciseSummary(BuildContext context, DayData dayData) {
+    final locale = Localizations.localeOf(context).languageCode;
+    final theme = Theme.of(context);
+
+    final grouped = <Exercise, List<SetConfigData>>{};
+    for (final slot in dayData.slots) {
+      for (final config in slot.setConfigs) {
+        grouped.putIfAbsent(config.exercise, () => []).add(config);
+      }
+    }
+
+    return Column(
+      children: grouped.entries.map((entry) {
+        final name = entry.key.getTranslation(locale).name;
+        final detail = entry.value.map((c) => c.textRepr).join(' + ');
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Text(
+                  name,
+                  style: theme.textTheme.titleMedium,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Flexible(
+                child: Text(
+                  detail,
+                  textAlign: TextAlign.right,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                    fontFeatures: const [FontFeature.tabularFigures()],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      }).toList(),
+    );
+  }
+
+  /// The hero card content for a routine with a schedulable day.
+  Widget _heroCard(
+    BuildContext context, {
+    required Routine routine,
+    required List<DayData> days,
+    required bool isHydrating,
+    required bool detailsLocked,
+  }) {
+    final i18n = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+    final dateFormat = localizedDate(context);
+
+    // Prefer today's scheduled day. Fall back to the next non-rest day so the
+    // card always shows something actionable.
+    final today = days.where((d) => d.date.isSameDayAs(DateTime.now())).firstOrNull;
+    final heroDay = today ?? days.where((d) => !d.day!.isRest).firstOrNull;
+    final isRestDay = today?.day?.isRest ?? false;
+
+    return Card(
+      clipBehavior: Clip.antiAlias,
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Eyebrow + trailing actions
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    i18n.todaysWorkout.toUpperCase(),
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      color: theme.colorScheme.primary,
+                      letterSpacing: 1.4,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+                if (isHydrating)
+                  const SizedBox(
+                    height: 20,
+                    width: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                else if (detailsLocked)
+                  Icon(Icons.cloud_off, color: theme.colorScheme.outline)
+                else
+                  IconButton(
+                    tooltip: i18n.toggleDetails,
+                    onPressed: () {
+                      setState(() {
+                        _showDetail = !_showDetail;
+                      });
+                    },
+                    icon: _showDetail ? const Icon(Icons.info) : const Icon(Icons.info_outline),
+                  ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            if (isRestDay)
+              Text(i18n.restDay, style: theme.textTheme.headlineMedium)
+            else
+              Text(
+                heroDay?.day?.nameWithType ?? routine.name,
+                style: theme.textTheme.headlineMedium,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            const SizedBox(height: 4),
+            Text(
+              '${routine.name} · ${dateFormat.format(heroDay?.date ?? routine.start)}',
+              style: theme.textTheme.titleMedium?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
+            const SizedBox(height: 20),
+            if (heroDay != null && !isRestDay) _buildExerciseSummary(context, heroDay),
+            const SizedBox(height: 20),
+            if (heroDay != null && !isRestDay)
+              SizedBox(
+                width: double.infinity,
+                child: FilledButton.icon(
+                  key: const ValueKey('dashboard-start-workout'),
+                  style: FilledButton.styleFrom(
+                    minimumSize: const Size.fromHeight(52),
+                    textStyle: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  icon: const Icon(Icons.play_arrow),
+                  label: Text(i18n.start),
+                  onPressed: () => _startGymMode(context, heroDay),
+                ),
+              ),
+            TextButton(
+              onPressed: detailsLocked
+                  ? null
+                  : () {
+                      Navigator.of(context).pushNamed(
+                        RoutineScreen.routeName,
+                        arguments: routine.id,
+                      );
+                    },
+              child: Text(i18n.goToDetailPage),
+            ),
+            if (_showDetail && !isHydrating && !detailsLocked)
+              Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: DetailContentWidget(days, true),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final dateFormat = localizedDate(context);
     final i18n = AppLocalizations.of(context);
 
     final asyncState = ref.watch(routinesRiverpodProvider);
@@ -134,74 +318,17 @@ class _DashboardRoutineWidgetState extends ConsumerState<DashboardRoutineWidget>
         }
 
         final isHydrating = hydration?.isLoading ?? false;
+        final days = routine.dayDataCurrentIterationFiltered;
 
-        return Card(
-          child: Column(
-            children: [
-              ListTile(
-                title: Text(routine.name, style: Theme.of(context).textTheme.headlineSmall),
-                subtitle: Text(
-                  '${dateFormat.format(routine.start)} - ${dateFormat.format(routine.end)}',
-                ),
-                leading: Icon(
-                  Icons.fitness_center,
-                  color: Theme.of(context).textTheme.headlineSmall!.color,
-                ),
-                trailing: isHydrating
-                    ? const SizedBox(
-                        height: 20,
-                        width: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : detailsLocked
-                    ? Icon(Icons.cloud_off, color: Theme.of(context).colorScheme.outline)
-                    : Tooltip(
-                        message: i18n.toggleDetails,
-                        child: _showDetail
-                            ? const Icon(Icons.info)
-                            : const Icon(Icons.info_outline),
-                      ),
-                // The toggle is meaningless while the day data is still
-                // loading or unavailable offline, so disable the tap then.
-                onTap: isHydrating || detailsLocked
-                    ? null
-                    : () {
-                        setState(() {
-                          _showDetail = !_showDetail;
-                        });
-                      },
-              ),
-              if (isHydrating)
-                const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 24),
-                  child: Center(child: CircularProgressIndicator()),
-                )
-              else if (!detailsLocked)
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: DetailContentWidget(
-                    routine.dayDataCurrentIterationFiltered,
-                    _showDetail,
-                  ),
-                ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  TextButton(
-                    onPressed: detailsLocked
-                        ? null
-                        : () {
-                            Navigator.of(context).pushNamed(
-                              RoutineScreen.routeName,
-                              arguments: routine.id,
-                            );
-                          },
-                    child: Text(i18n.goToDetailPage),
-                  ),
-                ],
-              ),
-            ],
-          ),
+        // During hydration the day structure is still loading: the hero card
+        // shows the routine name plus a spinner instead of exercise rows and
+        // the start button (which would have no data to log against yet).
+        return _heroCard(
+          context,
+          routine: routine,
+          days: days,
+          isHydrating: isHydrating,
+          detailsLocked: detailsLocked,
         );
       },
     );

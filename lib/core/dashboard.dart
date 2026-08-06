@@ -19,7 +19,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/core/app_settings_notifier.dart';
+import 'package:wger/core/formatting/formatting.dart';
 import 'package:wger/core/material.dart';
+import 'package:wger/core/network/auth_http_client.dart';
+import 'package:wger/core/network/network_provider.dart';
+import 'package:wger/core/network/wger_base.dart';
+import 'package:wger/core/settings_dashboard_widgets_screen.dart';
 import 'package:wger/core/widgets/app_bar.dart';
 import 'package:wger/core/widgets/dashboard/calendar.dart';
 import 'package:wger/core/widgets/dashboard/widgets/measurements.dart';
@@ -27,7 +32,93 @@ import 'package:wger/core/widgets/dashboard/widgets/nutrition.dart';
 import 'package:wger/core/widgets/dashboard/widgets/routines.dart';
 import 'package:wger/core/widgets/dashboard/widgets/trophies.dart';
 import 'package:wger/core/widgets/dashboard/widgets/weight.dart';
+import 'package:wger/core/widgets/sync_status_dialog.dart';
+import 'package:wger/database/powersync/powersync.dart'
+    show builtPowerSyncInstance, connectPowerSync, syncStatus, syncWatchdogProvider;
 import 'package:wger/l10n/generated/app_localizations.dart';
+
+/// Dashboard header: a large "Today" title with the full date, plus the
+/// actions that used to live in the app bar (widget configuration, sync
+/// status and the settings menu) so nothing becomes unreachable.
+class DashboardHeader extends ConsumerWidget {
+  const DashboardHeader({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final i18n = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+    final dateFormat = localizedDate(context);
+    final syncState = ref.watch(syncStatus);
+    final status = syncStatusIconAndLabel(syncState, i18n);
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(24, 28, 12, 12),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(i18n.today, style: theme.textTheme.displaySmall),
+                const SizedBox(height: 4),
+                Text(
+                  dateFormat.format(DateTime.now()),
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // 48dp tap targets, same actions as the previous app bar.
+          IconButton(
+            tooltip: i18n.dashboardWidgets,
+            icon: const Icon(Icons.widgets_outlined),
+            onPressed: () {
+              Navigator.of(context).pushNamed(ConfigureDashboardWidgetsScreen.routeName);
+            },
+          ),
+          IconButton(
+            tooltip: status.label,
+            icon: Icon(status.icon),
+            onPressed: () => showDialog<void>(
+              context: context,
+              // The dialog watches the sync state itself; only the server URL
+              // and the offline gate are snapshots taken when it opens.
+              builder: (_) => SyncStatusDialog(
+                serverUrl: ref.read(wgerBaseProvider).serverUrl,
+                onReconnect: !ref.read(networkStatusProvider)
+                    ? null
+                    : () {
+                        final db = builtPowerSyncInstance;
+                        final serverUrl = ref.read(wgerBaseProvider).serverUrl;
+                        if (db == null || serverUrl == null || !ref.read(networkStatusProvider)) {
+                          return;
+                        }
+                        ref.read(syncWatchdogProvider).reset();
+                        connectPowerSync(
+                          db,
+                          serverUrl,
+                          ref.read(authenticatedHttpClientProvider),
+                        );
+                      },
+              ),
+            ),
+          ),
+          IconButton(
+            tooltip: i18n.settingsTitle,
+            icon: const Icon(Icons.settings),
+            onPressed: () => showDialog<void>(
+              context: context,
+              builder: (BuildContext context) => const MainSettingsDialog(),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
 
 class DashboardScreen extends ConsumerWidget {
   const DashboardScreen({super.key});
@@ -61,10 +152,16 @@ class DashboardScreen extends ConsumerWidget {
       ),
     );
 
+    final i18n = AppLocalizations.of(context);
+
+    // The routine widget is the hero card: full width, always on top. The
+    // remaining widgets form the "Overview" section below.
+    final heroVisible = visibleWidgets.contains(DashboardWidget.routines);
+    final secondaryWidgets =
+        visibleWidgets.where((widget) => widget != DashboardWidget.routines).toList();
+
     late final int crossAxisCount;
-    if (width < MATERIAL_XS_BREAKPOINT) {
-      crossAxisCount = 1;
-    } else if (width < MATERIAL_MD_BREAKPOINT) {
+    if (width < MATERIAL_MD_BREAKPOINT) {
       crossAxisCount = 2;
     } else if (width < MATERIAL_LG_BREAKPOINT) {
       crossAxisCount = 3;
@@ -73,27 +170,60 @@ class DashboardScreen extends ConsumerWidget {
     }
 
     return Scaffold(
-      appBar: MainAppBar(AppLocalizations.of(context).labelDashboard),
       body: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: MATERIAL_LG_BREAKPOINT),
-          child: isMobile
-              ? ListView.builder(
-                  padding: const EdgeInsets.all(10),
-                  itemBuilder: (context, index) => _getDashboardWidget(visibleWidgets[index]),
-                  itemCount: visibleWidgets.length,
-                )
-              : GridView.builder(
-                  padding: const EdgeInsets.all(10),
-                  itemBuilder: (context, index) => SingleChildScrollView(
-                    child: _getDashboardWidget(visibleWidgets[index]),
-                  ),
-                  itemCount: visibleWidgets.length,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: crossAxisCount,
-                    childAspectRatio: 0.7,
+          child: ListView(
+            padding: const EdgeInsets.only(bottom: 32),
+            children: [
+              const DashboardHeader(),
+              if (heroVisible)
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+                  child: Center(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 760),
+                      child: const DashboardRoutineWidget(),
+                    ),
                   ),
                 ),
+              if (secondaryWidgets.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(24, 24, 24, 8),
+                  child: Text(
+                    i18n.overview,
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                          fontWeight: FontWeight.w600,
+                        ),
+                  ),
+                ),
+              if (isMobile)
+                ...secondaryWidgets.map(
+                  (widget) => Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    child: _getDashboardWidget(widget),
+                  ),
+                )
+              else
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: GridView.count(
+                    crossAxisCount: crossAxisCount,
+                    childAspectRatio: 0.7,
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    children: secondaryWidgets
+                        .map(
+                          (widget) => SingleChildScrollView(
+                            child: _getDashboardWidget(widget),
+                          ),
+                        )
+                        .toList(),
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );
