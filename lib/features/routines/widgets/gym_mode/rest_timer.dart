@@ -153,7 +153,7 @@ class _RestTimerOverlayState extends State<RestTimerOverlay> {
             children: [
               Icon(
                 finished ? Icons.check_circle_outline : Icons.timer_outlined,
-                color: theme.colorScheme.onInversePrimary,
+                color: theme.colorScheme.onInverseSurface,
                 size: 28,
               ),
               const SizedBox(width: 12),
@@ -165,7 +165,7 @@ class _RestTimerOverlayState extends State<RestTimerOverlay> {
                     Text(
                       finished ? i18n.done : i18n.restTimer,
                       style: theme.textTheme.labelMedium?.copyWith(
-                        color: theme.colorScheme.onInversePrimary,
+                        color: theme.colorScheme.onInverseSurface,
                         fontWeight: FontWeight.w700,
                         letterSpacing: 1.2,
                       ),
@@ -173,7 +173,7 @@ class _RestTimerOverlayState extends State<RestTimerOverlay> {
                     Text(
                       ElapsedWorkoutTimer.format(Duration(seconds: _remaining)),
                       style: theme.textTheme.displaySmall?.copyWith(
-                        color: theme.colorScheme.onInversePrimary,
+                        color: theme.colorScheme.onInverseSurface,
                         fontWeight: FontWeight.w800,
                         fontFeatures: const [FontFeature.tabularFigures()],
                       ),
