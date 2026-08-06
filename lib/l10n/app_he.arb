@@ -960,5 +960,7 @@
   "overallChangeWeight": "שינוי כללי",
   "@overallChangeWeight": {
     "description": "Overall change in weight, added for localization"
-  }
+  },
+  "restTimer": "טיימר מנוחה",
+  "restTimerSkip": "דלג"
 }

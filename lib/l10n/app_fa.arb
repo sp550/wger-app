@@ -383,5 +383,7 @@
     "equipment": "تجهیزات",
     "@equipment": {
         "description": "Equipment needed to perform an exercise"
-    }
+    },
+    "restTimer": "تایمر استراحت",
+    "restTimerSkip": "رد شدن"
 }

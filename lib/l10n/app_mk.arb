@@ -681,5 +681,7 @@
     "impressionGood": "Добро",
     "impressionNeutral": "Негативно",
     "impressionBad": "Лошо",
-    "restDay": "Ден за одмор"
+    "restDay": "Ден за одмор",
+    "restTimer": "Тајмер за одмор",
+    "restTimerSkip": "Прескокни"
 }

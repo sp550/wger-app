@@ -318,5 +318,7 @@
     "goalEnergy": "Energetický cieľ",
     "@goalEnergy": {},
     "goalProtein": "Cieľ bielkovín",
-    "@goalProtein": {}
+    "@goalProtein": {},
+    "restTimer": "Časovač odpočinku",
+    "restTimerSkip": "Preskočiť"
 }

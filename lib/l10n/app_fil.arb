@@ -44,5 +44,7 @@
     "useColors": "Gumamit ng mga kulay",
     "@useColors": {},
     "password": "Password",
-    "@password": {}
+    "@password": {},
+    "restTimer": "Rest timer",
+    "restTimerSkip": "Laktaw"
 }

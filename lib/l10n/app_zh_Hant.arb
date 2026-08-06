@@ -1132,5 +1132,7 @@
     "applicationLogs": "應用程式紀錄",
     "endBeforeStart": "結束值不得小於起始值",
     "minLengthRoutine": "訓練計畫至少需持續 {number} 週",
-    "maxLengthRoutine": "訓練計畫最多只能持續 {number} 週"
+    "maxLengthRoutine": "訓練計畫最多只能持續 {number} 週",
+    "restTimer": "休息計時器",
+    "restTimerSkip": "跳過"
 }

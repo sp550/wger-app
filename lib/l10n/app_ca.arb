@@ -1117,5 +1117,7 @@
             }
         }
     },
-    "searchLanguageAll": "Totes les llengües"
+    "searchLanguageAll": "Totes les llengües",
+    "restTimer": "Temps de descans",
+    "restTimerSkip": "Omet"
 }

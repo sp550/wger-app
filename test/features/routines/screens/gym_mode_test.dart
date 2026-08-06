@@ -45,6 +45,7 @@ import 'package:wger/features/routines/widgets/forms/rir.dart';
 import 'package:wger/features/routines/widgets/forms/slide_adjust_number_field.dart';
 import 'package:wger/features/routines/widgets/gym_mode/exercise_overview.dart';
 import 'package:wger/features/routines/widgets/gym_mode/log_page.dart';
+import 'package:wger/features/routines/widgets/gym_mode/rest_timer.dart';
 import 'package:wger/features/routines/widgets/gym_mode/session_page.dart';
 import 'package:wger/features/routines/widgets/gym_mode/start_page.dart';
 import 'package:wger/features/routines/widgets/gym_mode/summary.dart';
@@ -373,6 +374,51 @@ void main() {
     },
     tags: ['golden'],
     semanticsEnabled: false,
+  );
+
+  testWidgets(
+    'rest timer overlay appears after logging a set and can be dismissed',
+    (WidgetTester tester) async {
+      tester.view.physicalSize = const Size(800, 1400);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      await withClock(Clock.fixed(DateTime(2025, 3, 29, 14, 33)), () async {
+        await tester.pumpWidget(renderGymMode());
+        await tester.pumpAndSettle();
+        await tester.tap(find.byType(TextButton));
+        await tester.pumpAndSettle();
+
+        // Start page -> exercise overview -> first bench press log page.
+        await tester.tap(find.byIcon(Icons.chevron_right));
+        await tester.pumpAndSettle();
+        await tester.drag(find.byType(ExerciseOverview), const Offset(-500.0, 0.0));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(LogPage), findsOneWidget);
+
+        // One tap on Log saves the auto-filled set and shows the rest timer.
+        await tester.tap(find.byKey(const ValueKey('save-log-button')));
+        await tester.pumpAndSettle();
+
+        // The bench press sets carry a 120 s rest time, so the overlay counts
+        // it down in large digits while the PageView keeps working underneath.
+        expect(find.byType(RestTimerOverlay), findsOneWidget);
+        expect(
+          find.descendant(
+            of: find.byType(RestTimerOverlay),
+            matching: find.text('2:00'),
+          ),
+          findsOneWidget,
+        );
+
+        // Skipping dismisses the overlay without affecting the page below.
+        await tester.tap(find.byKey(const ValueKey('rest-timer-skip-button')));
+        await tester.pumpAndSettle();
+        expect(find.byType(RestTimerOverlay), findsNothing);
+      });
+    },
   );
 
   testWidgets('loads offline from the cached routine', (WidgetTester tester) async {

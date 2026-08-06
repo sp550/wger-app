@@ -100,7 +100,7 @@ void main() {
       notifier.setCurrentPage(2);
     }
 
-    Future<void> pumpLogPage(WidgetTester tester) async {
+    Future<void> pumpLogPage(WidgetTester tester, {VoidCallback? onSetLogged}) async {
       // The widget resolves its own slot now, so hand it the uuid of the slot
       // the gym state was seeded on (via setCurrentPage above).
       final slotUuid = container.read(gymStateProvider).getSlotEntryPageByIndex()!.uuid;
@@ -118,7 +118,7 @@ void main() {
                   final controller = PageController();
                   return PageView(
                     controller: controller,
-                    children: [LogPage(controller, slotUuid)],
+                    children: [LogPage(controller, slotUuid, onSetLogged: onSetLogged)],
                   );
                 },
               ),
@@ -381,6 +381,20 @@ void main() {
       expect(saved.slotEntryId, gymState.getSlotEntryPageByIndex()!.setConfigData!.slotEntryId);
       expect(saved.routineId, gymState.routine.id);
       expect(saved.iteration, gymState.iteration);
+    });
+
+    testWidgets('fires onSetLogged once after a successful save', (tester) async {
+      // The gym-mode shell listens on this callback to show the rest timer;
+      // it must only fire on the save success path (not on validation errors
+      // or when no callback is wired up).
+      var logged = 0;
+      seedLogPage(testdata.getTestRoutine());
+      await pumpLogPage(tester, onSetLogged: () => logged++);
+
+      await tester.tap(find.byKey(const ValueKey('save-log-button')));
+      await tester.pumpAndSettle();
+
+      expect(logged, 1);
     });
   });
 }

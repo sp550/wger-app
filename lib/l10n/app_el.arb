@@ -290,5 +290,7 @@
   "gymMode": "Λειτουργία γυμναστηρίου",
   "@gymMode": {
     "description": "Label when starting the gym mode"
-  }
+  },
+  "restTimer": "Χρονομέτρηση διαλείμματος",
+  "restTimerSkip": "Παράβλεψη"
 }

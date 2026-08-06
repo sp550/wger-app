@@ -55,7 +55,11 @@ class LogPage extends ConsumerWidget {
   /// content instead of whatever the globally-current page happens to be.
   final String slotUuid;
 
-  LogPage(this._controller, this.slotUuid);
+  /// Fired once after a set is successfully logged, letting the gym-mode
+  /// shell show the rest-timer overlay. Null in isolated tests.
+  final VoidCallback? onSetLogged;
+
+  LogPage(this._controller, this.slotUuid, {this.onSetLogged});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -161,6 +165,7 @@ class LogPage extends ConsumerWidget {
               child: LogFormWidget(
                 controller: _controller,
                 configData: setConfigData,
+                onSetLogged: onSetLogged,
                 key: ValueKey('log-form-${slotEntryPage.uuid}'),
               ),
             ),
@@ -300,10 +305,14 @@ class LogFormWidget extends ConsumerStatefulWidget {
   final PageController controller;
   final SetConfigData configData;
 
+  /// Fired once after a set is successfully logged (see [LogPage.onSetLogged]).
+  final VoidCallback? onSetLogged;
+
   const LogFormWidget({
     super.key,
     required this.controller,
     required this.configData,
+    this.onSetLogged,
   });
 
   @override
@@ -400,6 +409,12 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
     }
 
     gymProvider.markSlotPageAsDone(page.uuid, isDone: true);
+    // Rest timer: let the gym-mode shell show the countdown overlay right
+    // after the set is saved. This fires before the best-effort haptic below
+    // so the overlay never waits on the platform channel (which can hang in
+    // tests); the overlay is non-blocking, so it survives the page swipe and
+    // keeps counting while the user logs the next set.
+    widget.onSetLogged?.call();
     // Best-effort haptic: unavailable in tests and on some desktop platforms.
     try {
       await HapticFeedback.mediumImpact();

@@ -1199,5 +1199,7 @@
     "viewDocumentation": "Lihat Dokumentasi",
     "@viewDocumentation": {
         "description": "Button label to open the documentation about server configuration"
-    }
+    },
+    "restTimer": "Pengatur waktu istirahat",
+    "restTimerSkip": "Lewati"
 }

@@ -911,5 +911,7 @@
     "@yourCurrentNutritionPlanHasNoMealsDefinedYet": {
         "description": "Message shown when a nutrition plan doesn't have any meals"
     },
-    "endBeforeStart": "Konečná hodnota nemůže být předcházející počáteční hodnotě"
+    "endBeforeStart": "Konečná hodnota nemůže být předcházející počáteční hodnotě",
+    "restTimer": "Časovač odpočinku",
+    "restTimerSkip": "Přeskočit"
 }

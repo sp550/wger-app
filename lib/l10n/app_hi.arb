@@ -308,5 +308,7 @@
   "onlyLogging": "सिर्फ कैलोरी ट्रैक करें",
   "@onlyLogging": {},
   "onlyLoggingHelpText": "यदि आप केवल अपनी कैलोरी लॉग करना चाहते हैं और विशिष्ट भोजन के साथ विस्तृत पोषण योजना नहीं बनाना चाहते हैं तो बॉक्स को चेक करें",
-  "@onlyLoggingHelpText": {}
+  "@onlyLoggingHelpText": {},
+  "restTimer": "आराम टाइमर",
+  "restTimerSkip": "छोड़ें"
 }

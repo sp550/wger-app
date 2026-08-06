@@ -1399,5 +1399,7 @@
     "timeStartEndBothOrNeither": "Add meg a kezdési és a befejezési időt is, vagy hagyd mindkettőt üresen",
     "@timeStartEndBothOrNeither": {
         "description": "Validation error when only one of start/end time is set on a workout session"
-    }
+    },
+    "restTimer": "Pihenő időzítő",
+    "restTimerSkip": "Kihagyás"
 }

@@ -1018,5 +1018,7 @@
     "noTrophies": "У вас ще немає трофеїв",
     "endBeforeStart": "Кінцеве значення не може передувати початку",
     "minLengthRoutine": "Розпорядок має тривати принаймні {number} тижнів",
-    "maxLengthRoutine": "Процедура може тривати щонайбільше {number} тижнів"
+    "maxLengthRoutine": "Процедура може тривати щонайбільше {number} тижнів",
+    "restTimer": "Таймер відпочинку",
+    "restTimerSkip": "Пропустити"
 }
