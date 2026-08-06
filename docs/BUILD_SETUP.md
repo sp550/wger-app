@@ -67,3 +67,14 @@ cd /workspace/wger-app && flutter build apk --debug
 - APK on the Mac: `~/Local Coding/wger-app/build/app/outputs/flutter-apk/`
 - Sideload to Pixel 9 Pro: enable Wireless debugging → `adb pair 100.73.35.25:<port> <code>` once →
   `adb connect 100.73.35.25:<port>` → `adb install <apk>`
+
+## CI (2026-08-06): Android builds via GitHub Actions
+
+The container build box is retired. APK builds now run on GitHub Actions (repo `sp550/wger-app`, private).
+
+- Workflow: `.github/workflows/build-apk.yml` — manual dispatch (branch input) or push of `v*` tags.
+- Runner: ubuntu-latest, Flutter 3.44.8 (`.github/actions/flutter-common`), JDK 17.
+- The pub-cache Kotlin/AGP patch is applied by `tool/ci/patch_pub_cache.sh` (committed — replaces the old container-volume patch).
+- Release signing: keystore + passwords injected from GH secrets `WGER_RELEASE_*` (keystore backup + credentials: `/opt/opencode/backups/wger-release-keystore/` on docker-leederville, mode 0600).
+- Artifacts: `wger-app-apks` (app-debug.apk + app-release.apk) on the Actions run page.
+- Release build failure history: `:app:packageRelease` missing `storeFile` = missing `key.properties` (now supplied by CI from secrets), NOT a RAM/OOM problem.
