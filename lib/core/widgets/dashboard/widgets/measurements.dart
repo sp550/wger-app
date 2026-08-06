@@ -101,7 +101,7 @@ class _DashboardMeasurementWidgetState extends ConsumerState<DashboardMeasuremen
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(bottom: 10),
+                        padding: const EdgeInsets.only(bottom: 8),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: categoriesList.asMap().entries.map((entry) {

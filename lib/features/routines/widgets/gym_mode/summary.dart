@@ -165,7 +165,7 @@ class WorkoutSessionStats extends ConsumerWidget {
                     : '-/-',
               ),
             ),
-            const SizedBox(width: 10),
+            const SizedBox(width: 8),
             Expanded(
               child: InfoCard(
                 title: i18n.volume,
@@ -176,16 +176,16 @@ class WorkoutSessionStats extends ConsumerWidget {
         ),
         if (_userPrTrophies.isNotEmpty)
           Padding(
-            padding: const EdgeInsets.only(top: 10),
+            padding: const EdgeInsets.only(top: 8),
             child: InfoCard(
               title: i18n.personalRecords,
               value: _userPrTrophies.length.toString(),
               color: theme.colorScheme.tertiaryContainer,
             ),
           ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 8),
         MuscleGroupsCard(_session.logs),
-        const SizedBox(height: 10),
+        const SizedBox(height: 8),
         ExercisesCard(_session, _userPrTrophies),
         FilledButton(
           onPressed: () {

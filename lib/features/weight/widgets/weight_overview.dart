@@ -83,7 +83,7 @@ class WeightOverview extends riverpod.ConsumerWidget {
             SizedBox(
               height: 300,
               child: ListView.builder(
-                padding: const EdgeInsets.all(10.0),
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
                 itemCount: entriesList.length,
                 itemBuilder: (context, index) {
                   final currentEntry = entriesList[index];

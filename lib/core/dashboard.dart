@@ -52,7 +52,7 @@ class DashboardHeader extends ConsumerWidget {
     final status = syncStatusIconAndLabel(syncState, i18n);
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(24, 28, 12, 12),
+      padding: const EdgeInsets.fromLTRB(24, 32, 12, 12),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -189,7 +189,7 @@ class DashboardScreen extends ConsumerWidget {
                 ),
               if (secondaryWidgets.isNotEmpty)
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(24, 24, 24, 8),
+                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
                   child: Text(
                     i18n.overview,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(

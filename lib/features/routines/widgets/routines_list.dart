@@ -53,7 +53,7 @@ class _RoutinesListState extends ConsumerState<RoutinesList> {
           return const TextPrompt();
         }
         return ListView.builder(
-          padding: const EdgeInsets.all(10.0),
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
           itemCount: routines.length,
           itemBuilder: (context, index) {
             final currentRoutine = routines[index];

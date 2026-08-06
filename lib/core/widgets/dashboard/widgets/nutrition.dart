@@ -115,9 +115,9 @@ class DashboardNutritionWidget extends ConsumerWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 15),
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
                   child: FlNutritionalPlanGoalWidget(nutritionalPlan: plan),
                 ),
               ),

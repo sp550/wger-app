@@ -122,7 +122,7 @@ class TrophyCard extends StatelessWidget {
                       radius: 30,
                     ),
                   ),
-                  const SizedBox(width: 10),
+                  const SizedBox(width: 8),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,

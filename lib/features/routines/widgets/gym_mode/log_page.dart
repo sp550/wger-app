@@ -124,7 +124,7 @@ class LogPage extends ConsumerWidget {
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 2),
+              const SizedBox(height: 4),
               Text(
                 setConfigData.textRepr,
                 textAlign: TextAlign.center,
@@ -148,7 +148,7 @@ class LogPage extends ConsumerWidget {
         if (setConfigData.exercise.showPlateCalculator) const LogsPlatesWidget(),
         if (slotEntryPage.setConfigData!.comment.isNotEmpty)
           Text(slotEntryPage.setConfigData!.comment, textAlign: TextAlign.center),
-        const SizedBox(height: 10),
+        const SizedBox(height: 8),
 
         // Overriding the log scope from here is handled in a follow-up, the
         // settings currently only live in the gym mode options.
@@ -156,12 +156,12 @@ class LogPage extends ConsumerWidget {
         Expanded(child: _buildPastLogs(pastLogs, setConfigData.exercise)),
 
         Padding(
-          padding: const EdgeInsets.fromLTRB(10, 4, 10, 8),
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
           child: Card(
             color: Theme.of(context).colorScheme.inversePrimary,
             // color: Theme.of(context).secondaryHeaderColor,
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               child: LogFormWidget(
                 controller: _controller,
                 configData: setConfigData,
@@ -224,7 +224,7 @@ class LogsPlatesWidget extends ConsumerWidget {
                                 margin: 0,
                                 color: ref.read(plateCalculatorProvider).getColor(entry.key),
                               ),
-                              const SizedBox(width: 10),
+                              const SizedBox(width: 8),
                             ],
                           ),
                         ),
@@ -239,7 +239,7 @@ class LogsPlatesWidget extends ConsumerWidget {
                     ),
             ),
           ),
-          const SizedBox(height: 3),
+          const SizedBox(height: 4),
         ],
       ),
     );
@@ -269,7 +269,7 @@ class LogsPastLogsWidget extends ConsumerWidget {
       child: ListView(
         children: [
           Padding(
-            padding: const EdgeInsets.only(top: 4, bottom: 2),
+            padding: const EdgeInsets.only(top: 4, bottom: 4),
             child: Text(
               AppLocalizations.of(context).labelWorkoutLogs,
               style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
@@ -345,7 +345,7 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
       return null;
     }
     return PopupMenuButton<T>(
-      icon: const Icon(Icons.arrow_drop_down, size: 18),
+      icon: const Icon(Icons.arrow_drop_down, size: 20),
       tooltip: tooltip,
       onSelected: onSelected,
       itemBuilder: (context) => units
@@ -512,7 +512,7 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
                   },
                 ),
               ),
-              const SizedBox(width: 10),
+              const SizedBox(width: 8),
               Expanded(
                 child: SlideAdjustNumberField(
                   key: const ValueKey('logs-weight-widget'),
