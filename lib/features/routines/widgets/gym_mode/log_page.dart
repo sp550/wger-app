@@ -400,7 +400,12 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
     }
 
     gymProvider.markSlotPageAsDone(page.uuid, isDone: true);
-    HapticFeedback.mediumImpact();
+    // Best-effort haptic: unavailable in tests and on some desktop platforms.
+    try {
+      await HapticFeedback.mediumImpact();
+    } catch (_) {
+      // Haptics are best-effort; swallow plugin failures.
+    }
     showSnackbar(
       context,
       i18n.successfullySaved,
