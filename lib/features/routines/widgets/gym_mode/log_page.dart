@@ -409,6 +409,12 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
     }
 
     gymProvider.markSlotPageAsDone(page.uuid, isDone: true);
+    // Rest timer: let the gym-mode shell show the countdown overlay right
+    // after the set is saved. This fires before the best-effort haptic below
+    // so the overlay never waits on the platform channel (which can hang in
+    // tests); the overlay is non-blocking, so it survives the page swipe and
+    // keeps counting while the user logs the next set.
+    widget.onSetLogged?.call();
     // Best-effort haptic: unavailable in tests and on some desktop platforms.
     try {
       await HapticFeedback.mediumImpact();
@@ -424,10 +430,6 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
       center: true,
       duration: const Duration(seconds: 2),
     );
-    // Rest timer: let the gym-mode shell show the countdown overlay, then
-    // advance to the next page. The overlay is non-blocking, so it survives
-    // the swipe and keeps counting while the user logs the next set.
-    widget.onSetLogged?.call();
     widget.controller.nextPage(
       duration: DEFAULT_ANIMATION_DURATION,
       curve: DEFAULT_ANIMATION_CURVE,

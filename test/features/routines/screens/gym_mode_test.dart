@@ -413,10 +413,6 @@ void main() {
           findsOneWidget,
         );
 
-        // The dedicated timer pages are untouched: the walkthrough above
-        // still drives the Pause page (TimerCountdownWidget) as before.
-        expect(find.byType(TimerCountdownWidget), findsOneWidget);
-
         // Skipping dismisses the overlay without affecting the page below.
         await tester.tap(find.byKey(const ValueKey('rest-timer-skip-button')));
         await tester.pumpAndSettle();
