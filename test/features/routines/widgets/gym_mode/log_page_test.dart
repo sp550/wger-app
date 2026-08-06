@@ -263,6 +263,16 @@ void main() {
     });
 
     testWidgets('reps quick buttons increment and decrement the value', (tester) async {
+      // No previous logs: the form keeps the routine template values (reps = 0),
+      // so the +/- buttons are exercised from a known baseline instead of the
+      // auto-filled previous-session values.
+      when(
+        mockWorkoutLogRepo.watchLogsByExerciseDrift(
+          routineId: anyNamed('routineId'),
+          exerciseId: anyNamed('exerciseId'),
+        ),
+      ).thenAnswer((_) => Stream.value(const []));
+
       final routine = testdata.getTestRoutine();
       routine.dayDataGym[0].slots[0].setConfigs[0].repetitions = 0;
       seedLogPage(routine);
@@ -287,6 +297,15 @@ void main() {
     });
 
     testWidgets('weight quick buttons increment and decrement the value', (tester) async {
+      // See the reps test above: an empty past-log stream keeps the template
+      // baseline (weight = 0) so the step behaviour stays deterministic.
+      when(
+        mockWorkoutLogRepo.watchLogsByExerciseDrift(
+          routineId: anyNamed('routineId'),
+          exerciseId: anyNamed('exerciseId'),
+        ),
+      ).thenAnswer((_) => Stream.value(const []));
+
       final routine = testdata.getTestRoutine();
       routine.dayDataGym[0].slots[0].setConfigs[0].weight = 0;
       seedLogPage(routine);
@@ -310,6 +329,58 @@ void main() {
       await tester.tap(removeBtn);
       await tester.pumpAndSettle();
       expect(find.descendant(of: weightWidget, matching: find.text('0.5')), findsOneWidget);
+    });
+
+    testWidgets('pre-fills the form with the previous session weight/reps', (tester) async {
+      // Only one past log (10 reps x 10 kg), deterministically the "latest".
+      final pastLog = testdata.getTestRoutine().filterLogsByExercise(1).firstWhere(
+        (log) => log.repetitions == 10,
+      );
+      when(
+        mockWorkoutLogRepo.watchLogsByExerciseDrift(
+          routineId: anyNamed('routineId'),
+          exerciseId: anyNamed('exerciseId'),
+        ),
+      ).thenAnswer((_) => Stream.value([asDriftLog(pastLog)]));
+
+      seedLogPage(testdata.getTestRoutine());
+      await pumpLogPage(tester);
+
+      // The routine template says 3 reps x 100 kg, but the previous session's
+      // log wins, so a single tap on the Log button re-logs that performance.
+      final repsField = find.byKey(const ValueKey('logs-reps-widget'));
+      final weightField = find.byKey(const ValueKey('logs-weight-widget'));
+      expect(find.descendant(of: repsField, matching: find.text('10')), findsOneWidget);
+      expect(find.descendant(of: weightField, matching: find.text('10')), findsOneWidget);
+      expect(find.descendant(of: repsField, matching: find.text('3')), findsNothing);
+    });
+
+    testWidgets('one tap on Log saves the set at the previous weight/reps', (tester) async {
+      final pastLog = testdata.getTestRoutine().filterLogsByExercise(1).firstWhere(
+        (log) => log.repetitions == 10,
+      );
+      when(
+        mockWorkoutLogRepo.watchLogsByExerciseDrift(
+          routineId: anyNamed('routineId'),
+          exerciseId: anyNamed('exerciseId'),
+        ),
+      ).thenAnswer((_) => Stream.value([asDriftLog(pastLog)]));
+
+      seedLogPage(testdata.getTestRoutine());
+      await pumpLogPage(tester);
+
+      // Auto-fill turned the draft into the previous session's set; a single
+      // tap logs it and advances without touching the keyboard.
+      await tester.tap(find.byKey(const ValueKey('save-log-button')));
+      await tester.pumpAndSettle();
+
+      final saved = verify(mockWorkoutLogRepo.addLocalDrift(captureAny)).captured.single as Log;
+      final gymState = container.read(gymStateProvider);
+      expect(saved.repetitions, 10);
+      expect(saved.weight, 10);
+      expect(saved.slotEntryId, gymState.getSlotEntryPageByIndex()!.setConfigData!.slotEntryId);
+      expect(saved.routineId, gymState.routine.id);
+      expect(saved.iteration, gymState.iteration);
     });
   });
 }

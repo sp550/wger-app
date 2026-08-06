@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 import 'package:wger/core/consts.dart';
@@ -93,6 +94,8 @@ class LogPage extends ConsumerWidget {
         ? TextDecoration.lineThrough
         : TextDecoration.none;
 
+    final logPageCount = page.slotPages.where((e) => e.type == SlotPageType.log).length;
+
     return Column(
       children: [
         NavigationHeader(
@@ -100,42 +103,42 @@ class LogPage extends ConsumerWidget {
           _controller,
         ),
 
+        // Set progress: the current set number is the hero, the routine
+        // target (e.g. "3 × 100 kg") sits right below it, so the logged
+        // value can be compared against the plan at a glance.
         Container(
           color: theme.colorScheme.onInverseSurface,
-          padding: const EdgeInsets.symmetric(vertical: 10),
-          child: Center(
-            child: Column(
-              children: [
-                Column(
-                  children: [
-                    Text(
-                      setConfigData.textRepr,
-                      textAlign: TextAlign.center,
-                      style: theme.textTheme.headlineMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.primary,
-                        decoration: decorationStyle,
-                      ),
-                    ),
-                    if (setConfigData.type != SlotEntryType.normal)
-                      Text(
-                        setConfigData.type.name.toUpperCase(),
-                        textAlign: TextAlign.center,
-                        style: theme.textTheme.headlineSmall?.copyWith(
-                          color: Theme.of(context).colorScheme.primary,
-                          decoration: decorationStyle,
-                        ),
-                      ),
-                  ],
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: Column(
+            children: [
+              Text(
+                '${slotEntryPage.setIndex + 1} / $logPageCount',
+                style: theme.textTheme.titleMedium?.copyWith(
+                  color: theme.colorScheme.primary,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 0.5,
                 ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 2),
+              Text(
+                setConfigData.textRepr,
+                textAlign: TextAlign.center,
+                style: theme.textTheme.bodyLarge?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  decoration: decorationStyle,
+                ),
+              ),
+              if (setConfigData.type != SlotEntryType.normal)
                 Text(
-                  '${slotEntryPage.setIndex + 1} / ${page.slotPages.where((e) => e.type == SlotPageType.log).length}',
-                  style: theme.textTheme.bodyLarge?.copyWith(
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
+                  setConfigData.type.name.toUpperCase(),
                   textAlign: TextAlign.center,
+                  style: theme.textTheme.labelMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.primary,
+                    decoration: decorationStyle,
+                  ),
                 ),
-              ],
-            ),
+            ],
           ),
         ),
         if (setConfigData.exercise.showPlateCalculator) const LogsPlatesWidget(),
@@ -149,12 +152,12 @@ class LogPage extends ConsumerWidget {
         Expanded(child: _buildPastLogs(pastLogs, setConfigData.exercise)),
 
         Padding(
-          padding: const EdgeInsets.all(10),
+          padding: const EdgeInsets.fromLTRB(10, 4, 10, 8),
           child: Card(
             color: Theme.of(context).colorScheme.inversePrimary,
             // color: Theme.of(context).secondaryHeaderColor,
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 5),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
               child: LogFormWidget(
                 controller: _controller,
                 configData: setConfigData,
@@ -254,28 +257,37 @@ class LogsPastLogsWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final logProvider = ref.read(gymLogProvider.notifier);
     final dateFormat = localizedDate(context);
+    final theme = Theme.of(context);
 
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.symmetric(vertical: 4),
       child: ListView(
         children: [
-          Text(
-            AppLocalizations.of(context).labelWorkoutLogs,
-            style: Theme.of(context).textTheme.titleMedium,
-            textAlign: TextAlign.center,
+          Padding(
+            padding: const EdgeInsets.only(top: 4, bottom: 2),
+            child: Text(
+              AppLocalizations.of(context).labelWorkoutLogs,
+              style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+              textAlign: TextAlign.center,
+            ),
           ),
           ...pastLogs.map((pastLog) {
             return ListTile(
               key: ValueKey('past-log-${pastLog.id}'),
-              title: Text(pastLog.repTextNoNl(context)),
+              dense: true,
+              leading: const Icon(Icons.history, size: 20),
+              title: Text(
+                pastLog.repTextNoNl(context),
+                style: theme.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
+              ),
               subtitle: Text(dateFormat.format(pastLog.date)),
-              trailing: const Icon(Icons.copy),
+              trailing: const Icon(Icons.copy, size: 20),
               onTap: () {
                 logProvider.setLog(pastLog, exercise: exercise);
                 ScaffoldMessenger.of(context).hideCurrentSnackBar();
                 showSnackbar(context, AppLocalizations.of(context).dataCopied);
               },
-              contentPadding: const EdgeInsets.symmetric(horizontal: 40),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 24),
             );
           }),
         ],
@@ -301,6 +313,15 @@ class LogFormWidget extends ConsumerStatefulWidget {
 class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
   final _form = GlobalKey<FormState>();
 
+  /// Whether the draft has already been pre-filled from the previous session.
+  /// The pre-fill runs exactly once per log page (the form state is keyed by
+  /// the slot page uuid, so it re-arms when the page is revisited).
+  bool _didAutoFill = false;
+
+  /// Whether the user has manually adjusted weight/reps. Once the user takes
+  /// over, the previous-session pre-fill is skipped so their input wins.
+  bool _userTouched = false;
+
   /// Compact unit dropdown used by the slide-adjust fields.
   ///
   /// Mirrors the selector the previous form widgets rendered internally; the
@@ -324,11 +345,112 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
     );
   }
 
+  /// Pre-fills the draft with the most recent weight/reps logged for this
+  /// exercise (quick set entry): one tap on the Log button then re-logs the
+  /// previous performance. The routine's target values stay as the targets;
+  /// the slide-adjust fields remain available for corrections.
+  void _applyAutoFill(Log latest) {
+    if (_userTouched) {
+      return;
+    }
+    final current = ref.read(gymLogProvider);
+    if (current == null) {
+      return;
+    }
+    final prefill = current.copyWith(
+      weight: latest.weight,
+      repetitions: latest.repetitions,
+      weightUnitObj: latest.weightUnitObj,
+      repetitionsUnitObj: latest.repetitionsUnitObj,
+    );
+    ref.read(gymLogProvider.notifier).setLog(prefill);
+  }
+
+  Future<void> _save() async {
+    final i18n = AppLocalizations.of(context);
+    final form = _form.currentState;
+    if (form == null || !form.validate()) {
+      return;
+    }
+    form.save();
+
+    final log = ref.read(gymLogProvider);
+    if (log == null) {
+      return;
+    }
+    final error = validateWorkoutLogCrossField(
+      repetitions: log.repetitions,
+      weight: log.weight,
+      i18n: i18n,
+    );
+    if (error != null) {
+      showSnackbar(context, error);
+      return;
+    }
+
+    final gymState = ref.read(gymStateProvider);
+    final gymProvider = ref.read(gymStateProvider.notifier);
+    final page = gymState.getSlotEntryPageByIndex()!;
+
+    // A failed write is intentionally left to propagate to the global
+    // error handler; the success path below is then skipped.
+    await ref.read(workoutLogProvider).addEntry(log);
+    if (!mounted) {
+      return;
+    }
+
+    gymProvider.markSlotPageAsDone(page.uuid, isDone: true);
+    // Best-effort haptic: unavailable in tests and on some desktop platforms.
+    try {
+      await HapticFeedback.mediumImpact();
+    } catch (_) {
+      // Haptics are best-effort; swallow plugin failures.
+    }
+    if (!mounted) {
+      return;
+    }
+    showSnackbar(
+      context,
+      i18n.successfullySaved,
+      center: true,
+      duration: const Duration(seconds: 2),
+    );
+    widget.controller.nextPage(
+      duration: DEFAULT_ANIMATION_DURATION,
+      curve: DEFAULT_ANIMATION_CURVE,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context);
-    final logProvider = ref.read(workoutLogProvider);
+    final theme = Theme.of(context);
     final log = ref.watch(gymLogProvider);
+
+    // One-shot pre-fill: the latest past log for this exercise becomes the
+    // default weight/reps as soon as it is available. The same provider
+    // powers the past-log list above, so no extra query is issued.
+    final gymState = ref.watch(gymStateProvider);
+    final pastLogs = ref.watch(
+      pastExerciseLogsProvider(
+        routineId: gymState.routine.id!,
+        exerciseId: widget.configData.exerciseId,
+        weeksBack: gymState.logScopeWeeks,
+        distinct: gymState.showDistinctLogs,
+      ),
+    );
+    if (!_didAutoFill && !_userTouched && pastLogs.hasValue) {
+      final logs = pastLogs.value ?? const <Log>[];
+      if (logs.isNotEmpty) {
+        _didAutoFill = true;
+        final latest = logs.first;
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted && !_userTouched) {
+            _applyAutoFill(latest);
+          }
+        });
+      }
+    }
 
     // The log is populated when the page becomes current: the PageView can lay
     // out and mount this page before that happens, so guard against null.
@@ -341,11 +463,6 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
-            i18n.newEntry,
-            style: Theme.of(context).textTheme.titleLarge,
-            textAlign: TextAlign.center,
-          ),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -373,6 +490,7 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
                     },
                   ),
                   onChanged: (v) {
+                    _userTouched = true;
                     if (v != null) {
                       ref.read(gymLogProvider.notifier).setRepetitions(v);
                     }
@@ -400,6 +518,7 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
                     },
                   ),
                   onChanged: (v) {
+                    _userTouched = true;
                     if (v != null) {
                       ref.read(gymLogProvider.notifier).setWeight(v);
                       ref.read(plateCalculatorProvider.notifier).setWeight(v);
@@ -416,49 +535,21 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
               log.rir = value == '' ? null : num.parse(value);
             },
           ),
-          FilledButton(
-            key: const ValueKey('save-log-button'),
-            onPressed: () async {
-              final isValid = _form.currentState!.validate();
-              if (!isValid) {
-                return;
-              }
-              _form.currentState!.save();
-
-              final error = validateWorkoutLogCrossField(
-                repetitions: log.repetitions,
-                weight: log.weight,
-                i18n: i18n,
-              );
-              if (error != null) {
-                showSnackbar(context, error);
-                return;
-              }
-
-              final gymState = ref.read(gymStateProvider);
-              final gymProvider = ref.read(gymStateProvider.notifier);
-              final page = gymState.getSlotEntryPageByIndex()!;
-
-              // A failed write is intentionally left to propagate to the global
-              // error handler; the success path below is then skipped.
-              await logProvider.addEntry(log);
-              if (!context.mounted) {
-                return;
-              }
-
-              gymProvider.markSlotPageAsDone(page.uuid, isDone: true);
-              showSnackbar(
-                context,
-                i18n.successfullySaved,
-                center: true,
-                duration: const Duration(seconds: 2),
-              );
-              widget.controller.nextPage(
-                duration: DEFAULT_ANIMATION_DURATION,
-                curve: DEFAULT_ANIMATION_CURVE,
-              );
-            },
-            child: Text(i18n.save),
+          const SizedBox(height: 8),
+          SizedBox(
+            width: double.infinity,
+            height: 56,
+            child: FilledButton.icon(
+              key: const ValueKey('save-log-button'),
+              onPressed: _save,
+              icon: const Icon(Icons.check_circle_outline, size: 24),
+              label: Text(
+                i18n.log,
+                style: theme.textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+            ),
           ),
         ],
       ),
