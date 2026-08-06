@@ -19,13 +19,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:powersync/powersync.dart' show SyncStatus;
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:wger/core/app_settings_notifier.dart';
 import 'package:wger/core/home_tabs_screen.dart';
 import 'package:wger/core/network/network_provider.dart';
 import 'package:wger/core/shared_preferences.dart';
-import 'package:wger/database/powersync/powersync.dart' show SyncStatus, syncStatus;
+import 'package:wger/database/powersync/powersync.dart' show syncStatus;
 import 'package:wger/features/routines/models/routine.dart';
 import 'package:wger/features/routines/providers/routines_notifier.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
