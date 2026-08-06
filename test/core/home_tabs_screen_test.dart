@@ -16,17 +16,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:powersync/powersync.dart' show PowerSyncDatabase;
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:wger/core/app_settings_notifier.dart';
 import 'package:wger/core/home_tabs_screen.dart';
 import 'package:wger/core/network/network_provider.dart';
+import 'package:wger/core/shared_preferences.dart';
+import 'package:wger/database/powersync/powersync.dart' show SyncStatus, syncStatus;
 import 'package:wger/features/routines/models/routine.dart';
 import 'package:wger/features/routines/providers/routines_notifier.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
@@ -48,20 +47,19 @@ void main() {
   setUp(() async {
     // App settings (dashboard widget configuration, theme mode, ...) read
     // SharedPreferences; use the in-memory implementation like other tests.
-    final prefs = InMemorySharedPreferencesAsync.empty();
+    SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
     // Turn off every configurable dashboard widget so this navigation test
     // only exercises the header + tab shell (the hero card has its own suite).
-    await prefs.setString(PREFS_DASHBOARD_CONFIG, '[]');
-    SharedPreferencesAsyncPlatform.instance = prefs;
+    await PreferenceHelper.asyncPref.setString(PREFS_DASHBOARD_CONFIG, '[]');
   });
 
   Widget renderHomeTabs() {
     final container = ProviderContainer.test(
       overrides: [
         networkStatusProvider.overrideWithValue(true),
-        // The dashboard header shows the sync status icon; keep the PowerSync
-        // instance pending so no native database is created in the test.
-        powerSyncInstanceProvider.overrideWith((ref) => Completer<PowerSyncDatabase>().future),
+        // The dashboard header shows the sync status icon; stub the provider so
+        // no native database is created in the test.
+        syncStatus.overrideWithValue(const SyncStatus.uninitialized()),
         routinesRiverpodProvider.overrideWith(() => _StubRoutinesRiverpod([getTestRoutine()])),
       ],
     );
@@ -69,11 +67,11 @@ void main() {
 
     return UncontrolledProviderScope(
       container: container,
-      child: MaterialApp(
-        locale: const Locale('en'),
+      child: const MaterialApp(
+        locale: Locale('en'),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-        home: const HomeTabsScreen(),
+        home: HomeTabsScreen(),
       ),
     );
   }
@@ -97,7 +95,7 @@ void main() {
     expect(navBar.height, 72);
     // All five destinations, in order, with visible labels.
     expect(
-      navBar.destinations.map((d) => d.label).toList(),
+      navBar.destinations.map((d) => (d as NavigationDestination).label).toList(),
       ['Dashboard', 'Workout', 'Nutrition', 'Weight', 'Gallery'],
     );
 
