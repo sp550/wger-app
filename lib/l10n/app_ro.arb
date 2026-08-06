@@ -1089,5 +1089,7 @@
     },
     "endBeforeStart": "Valoarea de sfârșit nu poate fi înaintea celei de început",
     "minLengthRoutine": "Rutina trebuie să dureze cel puțin {number} săptămâni",
-    "maxLengthRoutine": "Rutina poate dura cel mult {number} săptămâni"
+    "maxLengthRoutine": "Rutina poate dura cel mult {number} săptămâni",
+    "restTimer": "Cronometru de odihnă",
+    "restTimerSkip": "Sari peste"
 }

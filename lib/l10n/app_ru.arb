@@ -940,5 +940,7 @@
     "@volume": {
         "description": "The volume of a workout or set, i.e. weight x reps"
     },
-    "workoutCompleted": "Тренировка завершена"
+    "workoutCompleted": "Тренировка завершена",
+    "restTimer": "Таймер отдыха",
+    "restTimerSkip": "Пропустить"
 }

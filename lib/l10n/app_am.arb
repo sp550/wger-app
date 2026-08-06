@@ -165,5 +165,7 @@
     "rir": "መጠባበቂያ ድግግሞሾች",
     "@rir": {
         "description": "Shorthand for Repetitions In Reserve"
-    }
+    },
+    "restTimer": "የእረፍት ጊዜ ቆጣሪ",
+    "restTimerSkip": "ዝለል"
 }

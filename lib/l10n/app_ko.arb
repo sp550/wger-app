@@ -905,5 +905,7 @@
     "others": "기타",
     "endBeforeStart": "종료 값은 시작 값보다 앞서 있을 수 없습니다",
     "minLengthRoutine": "루틴은 최소 {number}주 동안 지속되어야 합니다",
-    "maxLengthRoutine": "루틴은 최대 {number}주 동안 지속될 수 있습니다"
+    "maxLengthRoutine": "루틴은 최대 {number}주 동안 지속될 수 있습니다",
+    "restTimer": "휴식 타이머",
+    "restTimerSkip": "건너뛰기"
 }

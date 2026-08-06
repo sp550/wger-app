@@ -678,5 +678,7 @@
     "isRestDay": "休息日",
     "@isRestDay": {},
     "isRestDayHelp": "休憩日を設定する際はすべてのセットとエクササイズが削除されていることを確認してください。",
-    "@isRestDayHelp": {}
+    "@isRestDayHelp": {},
+    "restTimer": "休憩タイマー",
+    "restTimerSkip": "スキップ"
 }

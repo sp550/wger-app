@@ -1201,5 +1201,7 @@
     },
     "endBeforeStart": "De eindwaarde mag niet vóór de beginwaarde liggen",
     "minLengthRoutine": "De routine moet minimaal {number} weken duren",
-    "maxLengthRoutine": "De routine kan maximaal {number} weken duren"
+    "maxLengthRoutine": "De routine kan maximaal {number} weken duren",
+    "restTimer": "Rusttimer",
+    "restTimerSkip": "Overslaan"
 }

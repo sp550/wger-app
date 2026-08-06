@@ -1487,5 +1487,7 @@
   "timeStartEndBothOrNeither": "Either set both start and end time or leave both empty",
   "@timeStartEndBothOrNeither": {
     "description": "Validation error when only one of start/end time is set on a workout session"
-  }
+  },
+  "restTimer": "Rest timer",
+  "restTimerSkip": "Skip"
 }

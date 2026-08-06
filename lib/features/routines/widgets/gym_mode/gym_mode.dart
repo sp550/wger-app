@@ -33,6 +33,7 @@ import 'package:wger/features/routines/screens/gym_mode.dart';
 
 import 'exercise_overview.dart';
 import 'log_page.dart';
+import 'rest_timer.dart';
 import 'session_page.dart';
 import 'start_page.dart';
 import 'summary.dart';
@@ -52,6 +53,41 @@ class _GymModeState extends ConsumerState<GymMode> {
   late Future<int> _initData;
   bool _initialPageJumped = false;
   late final PageController _controller;
+
+  /// Whether the post-set rest timer is currently visible.
+  bool _showRestTimer = false;
+
+  /// Bumped on every logged set so the overlay restarts with a fresh
+  /// countdown instead of silently keeping the previous run.
+  int _restTimerEpoch = 0;
+
+  /// Per-set rest time captured when the set was logged; falls back to the
+  /// configured default countdown duration (see [_restTimerDuration]).
+  num? _restTimerSeconds;
+
+  /// Shows the rest timer after a set was logged. [restTime] is the rest
+  /// time of the set that was just logged (seconds), if it has one.
+  void _onSetLogged(num? restTime) {
+    if (!mounted) {
+      return;
+    }
+    setState(() {
+      _restTimerEpoch++;
+      _restTimerSeconds = restTime;
+      _showRestTimer = true;
+    });
+  }
+
+  /// Countdown time for the rest timer: the per-set rest time wins, then the
+  /// configured default countdown duration, with a sensible 90 s fallback.
+  Duration get _restTimerDuration {
+    final gymState = ref.read(gymStateProvider);
+    final seconds = _restTimerSeconds ??
+        (gymState.countdownDuration.inSeconds > 0
+            ? gymState.countdownDuration.inSeconds
+            : 90);
+    return Duration(seconds: seconds.toInt() > 0 ? seconds.toInt() : 90);
+  }
 
   @override
   void initState() {
@@ -121,7 +157,13 @@ class _GymModeState extends ConsumerState<GymMode> {
         }
 
         if (slotPage.type == SlotPageType.log) {
-          out.add(LogPage(_controller, slotPage.uuid));
+          out.add(
+            LogPage(
+              _controller,
+              slotPage.uuid,
+              onSetLogged: () => _onSetLogged(slotPage.setConfigData?.restTime),
+            ),
+          );
         }
 
         // Timer. Use rest time from config data if available, otherwise use user settings
@@ -172,18 +214,38 @@ class _GymModeState extends ConsumerState<GymMode> {
             ..._getContent(state),
           ];
 
-          return PageView(
-            controller: _controller,
-            onPageChanged: (page) {
-              ref.read(gymStateProvider.notifier).setCurrentPage(page);
+          return Column(
+            children: [
+              // Rest timer after a logged set. It lives above the PageView
+              // in the normal page flow, so it never covers the log controls:
+              // the user can keep swiping and logging while it counts down.
+              if (_showRestTimer)
+                RestTimerOverlay(
+                  key: ValueKey('rest-timer-overlay-$_restTimerEpoch'),
+                  duration: _restTimerDuration,
+                  alertOnFinish: state.alertOnCountdownEnd,
+                  onDismiss: () {
+                    if (mounted) {
+                      setState(() => _showRestTimer = false);
+                    }
+                  },
+                ),
+              Expanded(
+                child: PageView(
+                  controller: _controller,
+                  onPageChanged: (page) {
+                    ref.read(gymStateProvider.notifier).setCurrentPage(page);
 
-              // Check if the last page is reached
-              if (page == children.length - 1) {
-                widget._logger.finer('Last page reached, clearing gym state');
-                ref.read(gymStateProvider.notifier).clear();
-              }
-            },
-            children: children,
+                    // Check if the last page is reached
+                    if (page == children.length - 1) {
+                      widget._logger.finer('Last page reached, clearing gym state');
+                      ref.read(gymStateProvider.notifier).clear();
+                    }
+                  },
+                  children: children,
+                ),
+              ),
+            ],
           );
         }
 

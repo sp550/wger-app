@@ -11,5 +11,7 @@
     "register": "Kuzvinyoresa",
     "@register": {
         "description": "Text for registration button"
-    }
+    },
+    "restTimer": "Rest timer",
+    "restTimerSkip": "Skip"
 }

@@ -279,5 +279,7 @@
     "muscles": "Muskler",
     "@muscles": {
         "description": "(main) muscles trained by an exercise"
-    }
+    },
+    "restTimer": "Hviletimer",
+    "restTimerSkip": "Hopp over"
 }

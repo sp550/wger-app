@@ -574,5 +574,7 @@
     "timeEnd": "Končni čas",
     "@timeEnd": {
         "description": "The end time of a workout"
-    }
+    },
+    "restTimer": "Časovnik počitka",
+    "restTimerSkip": "Preskoči"
 }

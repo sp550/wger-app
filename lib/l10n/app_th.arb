@@ -124,5 +124,7 @@
     "exercises": "ออกกำลังกาย",
     "@exercises": {
         "description": "Multiple exercises for a workout"
-    }
+    },
+    "restTimer": "ตัวจับเวลาพัก",
+    "restTimerSkip": "ข้าม"
 }
