@@ -21,23 +21,26 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 import 'package:wger/core/consts.dart';
 import 'package:wger/core/formatting/formatting.dart';
+import 'package:wger/core/i18n.dart';
 import 'package:wger/core/snackbar.dart';
 import 'package:wger/core/widgets/core.dart';
 import 'package:wger/core/widgets/error.dart';
 import 'package:wger/features/exercises/models/exercise.dart';
 import 'package:wger/features/routines/models/log.dart';
+import 'package:wger/features/routines/models/repetition_unit.dart';
 import 'package:wger/features/routines/models/set_config_data.dart';
 import 'package:wger/features/routines/models/slot_entry.dart';
+import 'package:wger/features/routines/models/weight_unit.dart';
 import 'package:wger/features/routines/providers/gym_log_notifier.dart';
 import 'package:wger/features/routines/providers/gym_state.dart';
 import 'package:wger/features/routines/providers/gym_state_notifier.dart';
 import 'package:wger/features/routines/providers/plate_weights.dart';
+import 'package:wger/features/routines/providers/routines_notifier.dart';
 import 'package:wger/features/routines/providers/workout_logs_notifier.dart';
 import 'package:wger/features/routines/screens/settings_plates_screen.dart';
 import 'package:wger/features/routines/validators.dart';
-import 'package:wger/features/routines/widgets/forms/repetitions.dart';
 import 'package:wger/features/routines/widgets/forms/rir.dart';
-import 'package:wger/features/routines/widgets/forms/weight.dart';
+import 'package:wger/features/routines/widgets/forms/slide_adjust_number_field.dart';
 import 'package:wger/features/routines/widgets/gym_mode/navigation.dart';
 import 'package:wger/features/routines/widgets/plate_calculator.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
@@ -298,6 +301,29 @@ class LogFormWidget extends ConsumerStatefulWidget {
 class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
   final _form = GlobalKey<FormState>();
 
+  /// Compact unit dropdown used by the slide-adjust fields.
+  ///
+  /// Mirrors the selector the previous form widgets rendered internally; the
+  /// slide-adjust field itself stays decoupled from the unit models/providers.
+  Widget? _buildUnitSelector<T>({
+    required List<T> units,
+    required String tooltip,
+    required String Function(T) label,
+    required ValueChanged<T> onSelected,
+  }) {
+    if (units.isEmpty) {
+      return null;
+    }
+    return PopupMenuButton<T>(
+      icon: const Icon(Icons.arrow_drop_down, size: 18),
+      tooltip: tooltip,
+      onSelected: onSelected,
+      itemBuilder: (context) => units
+          .map((u) => PopupMenuItem<T>(value: u, child: Text(label(u))))
+          .toList(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context);
@@ -321,40 +347,62 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
             textAlign: TextAlign.center,
           ),
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Flexible(
-                child: RepetitionInputWidget(
+              Expanded(
+                child: SlideAdjustNumberField(
                   key: const ValueKey('logs-reps-widget'),
                   value: log.repetitions,
-                  valueChange: widget.configData.repetitionsRounding,
-                  unit: log.repetitionsUnitObj,
+                  step: widget.configData.repetitionsRounding ?? 1,
+                  decimals: 0,
+                  label: i18n.repetitions,
+                  // The default 'repetitions' unit is implied by the label;
+                  // only render a non-default unit next to the value.
+                  unitLabel: log.repetitionsUnitObj != null &&
+                          log.repetitionsUnitObj!.id != REP_UNIT_REPETITIONS_ID
+                      ? getServerStringTranslation(log.repetitionsUnitObj!.name, context)
+                      : null,
+                  unitSelector: _buildUnitSelector(
+                    tooltip: i18n.repetitionUnit,
+                    units:
+                        ref.watch(routineRepetitionUnitProvider).asData?.value ??
+                            const <RepetitionUnit>[],
+                    label: (u) => getServerStringTranslation(u.name, context),
+                    onSelected: (v) {
+                      ref.read(gymLogProvider.notifier).setRepetitionUnit(v);
+                    },
+                  ),
                   onChanged: (v) {
                     if (v != null) {
                       ref.read(gymLogProvider.notifier).setRepetitions(v);
                     }
                   },
-                  onUnitChanged: (v) {
-                    if (v != null) {
-                      ref.read(gymLogProvider.notifier).setRepetitionUnit(v);
-                    }
-                  },
                 ),
               ),
-              Flexible(
-                child: WeightInputWidget(
+              const SizedBox(width: 10),
+              Expanded(
+                child: SlideAdjustNumberField(
                   key: const ValueKey('logs-weight-widget'),
                   value: log.weight,
-                  valueChange: widget.configData.weightRounding,
-                  unit: log.weightUnitObj,
+                  step: widget.configData.weightRounding ?? 0.5,
+                  decimals: 2,
+                  label: i18n.weight,
+                  unitLabel: log.weightUnitObj != null
+                      ? getServerStringTranslation(log.weightUnitObj!.name, context)
+                      : null,
+                  unitSelector: _buildUnitSelector(
+                    tooltip: i18n.weightUnit,
+                    units: ref.watch(routineWeightUnitProvider).asData?.value ??
+                        const <WeightUnit>[],
+                    label: (u) => getServerStringTranslation(u.name, context),
+                    onSelected: (v) {
+                      ref.read(gymLogProvider.notifier).setWeightUnit(v);
+                    },
+                  ),
                   onChanged: (v) {
                     if (v != null) {
                       ref.read(gymLogProvider.notifier).setWeight(v);
                       ref.read(plateCalculatorProvider.notifier).setWeight(v);
-                    }
-                  },
-                  onUnitChanged: (v) {
-                    if (v != null) {
-                      ref.read(gymLogProvider.notifier).setWeightUnit(v);
                     }
                   },
                 ),

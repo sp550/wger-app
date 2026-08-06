@@ -188,12 +188,12 @@ void main() {
       await tester.tap(pastLogTile.first);
       await tester.pumpAndSettle();
 
-      final editableFields = find.byType(EditableText);
-      expect(editableFields, findsWidgets);
-      final repText = tester.widget<EditableText>(editableFields.at(0)).controller.text;
-      final weightText = tester.widget<EditableText>(editableFields.at(1)).controller.text;
-      expect(repText, contains('10'));
-      expect(weightText, contains('10'));
+      // The past log carries 10 reps / 10 weight, which the slide-adjust
+      // fields now display directly instead of text fields.
+      final repsField = find.byKey(const ValueKey('logs-reps-widget'));
+      final weightField = find.byKey(const ValueKey('logs-weight-widget'));
+      expect(find.descendant(of: repsField, matching: find.text('10')), findsOneWidget);
+      expect(find.descendant(of: weightField, matching: find.text('10')), findsOneWidget);
       expect(find.byType(SnackBar), findsOneWidget);
     });
 
@@ -224,12 +224,31 @@ void main() {
       seedLogPage(testdata.getTestRoutine());
       await pumpLogPage(tester);
 
-      // Overwrite the pre-filled values so the assertion proves the user's
-      // edits flow through, not just the set-config defaults.
-      final fields = find.byType(TextFormField);
-      await tester.enterText(fields.at(0), '12'); // reps
-      await tester.enterText(fields.at(1), '34'); // weight
-      await tester.pump();
+      // Precise input happens through the manual-entry dialog: open it from
+      // each field's keyboard button and confirm the typed values.
+      Future<void> enterViaDialog(Key fieldKey, String value) async {
+        await tester.tap(
+          find.descendant(
+            of: find.byKey(fieldKey),
+            matching: find.byIcon(Icons.keyboard_alt_outlined),
+          ),
+        );
+        await tester.pumpAndSettle();
+        await tester.enterText(
+          find.descendant(
+            of: find.byType(AlertDialog),
+            matching: find.byType(TextFormField),
+          ),
+          value,
+        );
+        await tester.tap(
+          find.descendant(of: find.byType(AlertDialog), matching: find.text('Save')),
+        );
+        await tester.pumpAndSettle();
+      }
+
+      await enterViaDialog(const ValueKey('logs-reps-widget'), '12'); // reps
+      await enterViaDialog(const ValueKey('logs-weight-widget'), '34'); // weight
 
       await tester.tap(find.byKey(const ValueKey('save-log-button')));
       await tester.pumpAndSettle();
@@ -278,17 +297,19 @@ void main() {
       final addBtn = find.descendant(of: weightWidget, matching: find.byIcon(Icons.add));
       final removeBtn = find.descendant(of: weightWidget, matching: find.byIcon(Icons.remove));
 
+      // No per-exercise rounding is configured for this fixture, so the
+      // slide-adjust field falls back to the default 0.5 kg step.
       await tester.tap(addBtn);
       await tester.pumpAndSettle();
-      expect(find.descendant(of: weightWidget, matching: find.text('1.25')), findsOneWidget);
+      expect(find.descendant(of: weightWidget, matching: find.text('0.5')), findsOneWidget);
 
       await tester.tap(addBtn);
       await tester.pumpAndSettle();
-      expect(find.descendant(of: weightWidget, matching: find.text('2.5')), findsOneWidget);
+      expect(find.descendant(of: weightWidget, matching: find.text('1')), findsOneWidget);
 
       await tester.tap(removeBtn);
       await tester.pumpAndSettle();
-      expect(find.descendant(of: weightWidget, matching: find.text('1.25')), findsOneWidget);
+      expect(find.descendant(of: weightWidget, matching: find.text('0.5')), findsOneWidget);
     });
   });
 }

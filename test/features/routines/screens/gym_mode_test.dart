@@ -42,6 +42,7 @@ import 'package:wger/features/routines/providers/workout_session_repository.dart
 import 'package:wger/features/routines/screens/gym_mode.dart';
 import 'package:wger/features/routines/screens/routine_screen.dart';
 import 'package:wger/features/routines/widgets/forms/rir.dart';
+import 'package:wger/features/routines/widgets/forms/slide_adjust_number_field.dart';
 import 'package:wger/features/routines/widgets/gym_mode/exercise_overview.dart';
 import 'package:wger/features/routines/widgets/gym_mode/log_page.dart';
 import 'package:wger/features/routines/widgets/gym_mode/session_page.dart';
@@ -161,6 +162,14 @@ void main() {
   testWidgets(
     'Test the widgets on the gym mode screen',
     (WidgetTester tester) async {
+      // A phone-like, taller surface: the slide-adjust log form is more
+      // spacious than the old compact fields, so the past-log list needs
+      // enough room to render both entries.
+      tester.view.physicalSize = const Size(800, 1400);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
       await withClock(Clock.fixed(DateTime(2025, 3, 29, 14, 33)), () async {
         await tester.pumpWidget(renderGymMode());
         await tester.pumpAndSettle();
@@ -209,15 +218,16 @@ void main() {
         expect(find.byIcon(Icons.chevron_left), findsOneWidget);
         expect(find.byIcon(Icons.chevron_right), findsOneWidget);
 
-        // The form shows reps and weight, each with its own unit
-        // picker (PopupMenuButton<int>), plus the RiR slider, all at
-        // once. Scope the popup-menu lookup to the LogPage so other
-        // popup menus elsewhere in the app shell don't interfere.
-        expect(find.byType(TextFormField), findsNWidgets(2));
+        // The form shows reps and weight as slide-adjust fields, each with
+        // its own unit picker (a PopupMenuButton of unit objects), plus the
+        // RiR slider, all at once. Scope the popup-menu lookup to the
+        // LogPage so other popup menus elsewhere in the app shell don't
+        // interfere.
+        expect(find.byType(SlideAdjustNumberField), findsNWidgets(2));
         expect(
           find.descendant(
             of: find.byType(LogPage),
-            matching: find.byType(PopupMenuButton<int>),
+            matching: find.byWidgetPredicate((w) => w is PopupMenuButton),
           ),
           findsNWidgets(2),
         );
