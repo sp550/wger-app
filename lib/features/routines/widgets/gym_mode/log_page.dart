@@ -406,6 +406,9 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
     } catch (_) {
       // Haptics are best-effort; swallow plugin failures.
     }
+    if (!context.mounted) {
+      return;
+    }
     showSnackbar(
       context,
       i18n.successfullySaved,
