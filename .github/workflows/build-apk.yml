@@ -69,7 +69,7 @@ jobs:
         run: flutter build apk --debug --target-platform android-arm64
 
       - name: Prepare release signing
-        if: ${{ inputs.build_release != false }}
+        if: ${{ inputs.build_release != 'false' }}
         env:
           KS_B64: ${{ secrets.WGER_RELEASE_KEYSTORE_B64 }}
           KS_PASS: ${{ secrets.WGER_RELEASE_KEYSTORE_PASSWORD }}
@@ -91,7 +91,7 @@ jobs:
           ls -l android/fork-release.jks fastlane/metadata/envfiles/key.properties
 
       - name: Build release APK
-        if: ${{ inputs.build_release != false }}
+        if: ${{ inputs.build_release != 'false' }}
         run: flutter build apk --release --target-platform android-arm64
 
       - name: Upload APKs
