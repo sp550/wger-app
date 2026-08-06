@@ -97,8 +97,9 @@ void main() {
 
   testWidgets('bottom navigation shows labelled destinations and switches tabs', (tester) async {
     // Phone-sized surface so the narrow-screen bottom bar (not the rail) is used.
-    await tester.binding.setSurfaceSize(const Size(390, 844));
-    addTearDown(() => tester.binding.setSurfaceSize(null));
+    tester.view.physicalSize = const Size(390 * 3, 844 * 3);
+    tester.view.devicePixelRatio = 3.0;
+    addTearDown(tester.view.reset);
 
     await tester.pumpWidget(renderHomeTabs());
     // Bounded pumps instead of pumpAndSettle: some offstage tabs (nutrition,
@@ -109,6 +110,12 @@ void main() {
 
     // The navigation bar is the obvious bottom bar with always-visible labels
     // and a comfortable height for >= 48dp tap targets.
+    expect(
+      find.byType(NavigationBar),
+      findsOneWidget,
+      reason: 'expected bottom NavigationBar on the 390px surface '
+          '(rail count: ${find.byType(NavigationRail).evaluate().length})',
+    );
     final navBar = tester.widget<NavigationBar>(find.byType(NavigationBar));
     expect(navBar.labelBehavior, NavigationDestinationLabelBehavior.alwaysShow);
     expect(navBar.height, 72);
