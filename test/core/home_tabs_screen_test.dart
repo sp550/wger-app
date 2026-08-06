@@ -23,6 +23,8 @@ import 'package:shared_preferences_platform_interface/in_memory_shared_preferenc
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:wger/core/app_settings_notifier.dart';
 import 'package:wger/core/home_tabs_screen.dart';
+import 'package:wger/core/network/auth_notifier.dart';
+import 'package:wger/core/network/auth_state.dart';
 import 'package:wger/core/network/network_provider.dart';
 import 'package:wger/core/shared_preferences.dart';
 import 'package:wger/features/routines/models/routine.dart';
@@ -42,6 +44,22 @@ class _StubRoutinesRiverpod extends RoutinesRiverpod {
   Stream<RoutinesState> build() => Stream.value(RoutinesState(routines: _routines));
 }
 
+/// Logged-in auth so the tab shell (not the login gate) is what renders.
+class _FakeAuthNotifier extends AuthNotifier {
+  _FakeAuthNotifier(this._state);
+
+  final AuthState _state;
+
+  @override
+  Future<AuthState> build() async => _state;
+}
+
+const _loggedInAuth = AuthState(
+  status: AuthStatus.loggedIn,
+  credential: LegacyCredential('test-token'),
+  serverUrl: 'http://localhost',
+);
+
 void main() {
   setUp(() async {
     // App settings (dashboard widget configuration, theme mode, ...) read
@@ -56,6 +74,7 @@ void main() {
     final container = ProviderContainer.test(
       overrides: [
         networkStatusProvider.overrideWithValue(true),
+        authProvider.overrideWith(() => _FakeAuthNotifier(_loggedInAuth)),
         // NOTE: the dashboard header also watches the PowerSync sync status;
         // like the screenshot helper, we do not stub it — the underlying
         // stream provider tolerates the missing plugin (AsyncError -> the
