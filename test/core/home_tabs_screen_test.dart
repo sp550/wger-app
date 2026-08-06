@@ -19,14 +19,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:powersync/powersync.dart' show SyncStatus;
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:wger/core/app_settings_notifier.dart';
 import 'package:wger/core/home_tabs_screen.dart';
 import 'package:wger/core/network/network_provider.dart';
 import 'package:wger/core/shared_preferences.dart';
-import 'package:wger/database/powersync/powersync.dart' show syncStatus;
 import 'package:wger/features/routines/models/routine.dart';
 import 'package:wger/features/routines/providers/routines_notifier.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
@@ -58,9 +56,10 @@ void main() {
     final container = ProviderContainer.test(
       overrides: [
         networkStatusProvider.overrideWithValue(true),
-        // The dashboard header shows the sync status icon; stub the provider so
-        // no native database is created in the test.
-        syncStatus.overrideWithValue(const SyncStatus.uninitialized()),
+        // NOTE: the dashboard header also watches the PowerSync sync status;
+        // like the screenshot helper, we do not stub it — the underlying
+        // stream provider tolerates the missing plugin (AsyncError -> the
+        // header falls back to its uninitialized icon).
         routinesRiverpodProvider.overrideWith(() => _StubRoutinesRiverpod([getTestRoutine()])),
       ],
     );
