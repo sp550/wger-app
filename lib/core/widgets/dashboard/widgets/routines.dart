@@ -162,7 +162,7 @@ class _DashboardRoutineWidgetState extends ConsumerState<DashboardRoutineWidget>
     return Card(
       clipBehavior: Clip.antiAlias,
       child: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -216,16 +216,16 @@ class _DashboardRoutineWidgetState extends ConsumerState<DashboardRoutineWidget>
                 color: theme.colorScheme.onSurfaceVariant,
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 16),
             if (heroDay != null && !isRestDay) _buildExerciseSummary(context, heroDay),
-            const SizedBox(height: 20),
+            const SizedBox(height: 16),
             if (heroDay != null && !isRestDay)
               SizedBox(
                 width: double.infinity,
                 child: FilledButton.icon(
                   key: const ValueKey('dashboard-start-workout'),
                   style: FilledButton.styleFrom(
-                    minimumSize: const Size.fromHeight(52),
+                    minimumSize: const Size.fromHeight(56),
                     textStyle: theme.textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
@@ -235,6 +235,7 @@ class _DashboardRoutineWidgetState extends ConsumerState<DashboardRoutineWidget>
                   onPressed: () => _startGymMode(context, heroDay),
                 ),
               ),
+            const SizedBox(height: 8),
             TextButton(
               onPressed: detailsLocked
                   ? null
@@ -409,7 +410,7 @@ class DetailContentWidget extends StatelessWidget {
                                             )
                                             .name,
                                       ),
-                                      const SizedBox(width: 10),
+                                      const SizedBox(width: 8),
                                       Expanded(
                                         child: MutedText(
                                           s.textRepr,
@@ -418,7 +419,7 @@ class DetailContentWidget extends StatelessWidget {
                                       ),
                                     ],
                                   ),
-                                  const SizedBox(height: 10),
+                                  const SizedBox(height: 8),
                                 ],
                               )
                             : Container(),

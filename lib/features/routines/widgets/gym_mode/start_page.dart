@@ -67,7 +67,7 @@ class _GymModeOptionsState extends ConsumerState<GymModeOptions> {
         AnimatedCrossFade(
           firstChild: const SizedBox.shrink(),
           secondChild: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxHeight: 400),
               child: Card(
@@ -240,7 +240,7 @@ class StartPage extends ConsumerWidget {
               if (dayDataDisplay.day!.isSpecialType)
                 Center(
                   child: Padding(
-                    padding: const EdgeInsets.all(15),
+                    padding: const EdgeInsets.all(16),
                     child: Text(
                       '${dayDataDisplay.day!.type.name.toUpperCase()}\n${dayDataDisplay.day!.type.i18Label(AppLocalizations.of(context))}',
                       textAlign: TextAlign.center,

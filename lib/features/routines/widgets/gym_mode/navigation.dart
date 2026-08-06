@@ -48,7 +48,7 @@ class NavigationHeader extends StatelessWidget {
         ),
         Expanded(
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10),
+            padding: const EdgeInsets.symmetric(vertical: 8),
             child: Text(
               _title,
               style: Theme.of(context).textTheme.headlineSmall,
@@ -111,12 +111,16 @@ class NavigationFooter extends ConsumerWidget {
               context: context,
               builder: (ctx) => WorkoutMenuDialog(_controller, initialIndex: 1),
             ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 15),
-              child: LinearProgressIndicator(
-                minHeight: 3,
-                value: gymState.ratioCompleted,
-                valueColor: const AlwaysStoppedAnimation<Color>(wgerPrimaryColor),
+            // Full 48dp tap target: the whole strip opens the workout menu,
+            // not just the thin bar.
+            child: SizedBox(
+              height: 48,
+              child: Center(
+                child: LinearProgressIndicator(
+                  minHeight: 4,
+                  value: gymState.ratioCompleted,
+                  valueColor: const AlwaysStoppedAnimation<Color>(wgerPrimaryColor),
+                ),
               ),
             ),
           ),
