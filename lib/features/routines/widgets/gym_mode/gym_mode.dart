@@ -116,13 +116,15 @@ class _GymModeState extends ConsumerState<GymMode> {
 
     // The locally-cached routine (drift), if available and previously
     // hydrated. Used as an offline fallback when the server is unreachable.
-    Routine? cachedRoutine() => ref
+    final Routine? cachedRoutine() => ref
         .read(routinesRiverpodProvider)
         .value
         ?.routines
         .firstWhereOrNull((r) => r.id == routineId);
 
-    final Routine routine;
+    // Non-final: assigned in try or catch depending on which path succeeds
+    // (the analyzer can't treat try/catch assignments as mutually exclusive).
+    Routine routine;
     if (ref.read(networkStatusProvider)) {
       try {
         routine = await notifier.fetchAndSetRoutineFull(routineId);
