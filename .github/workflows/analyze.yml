@@ -1,6 +1,5 @@
 name: Analyze
 on:
-  workflow_dispatch:
   push:
     paths:
       - '**.dart'

@@ -1,3 +1,4 @@
+
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
  * Copyright (c)  2026 wger Team
@@ -113,17 +114,33 @@ class _GymModeState extends ConsumerState<GymMode> {
     final notifier = ref.read(routinesRiverpodProvider.notifier);
     final routineId = widget._args.routineId;
 
-    final Routine routine;
+    // The locally-cached routine (drift), if available and previously
+    // hydrated. Used as an offline fallback when the server is unreachable.
+    Routine? cachedRoutine() => ref
+        .read(routinesRiverpodProvider)
+        .value
+        ?.routines
+        .firstWhereOrNull((r) => r.id == routineId);
+
+    // Non-final: assigned in try or catch depending on which path succeeds
+    // (the analyzer can't treat try/catch assignments as mutually exclusive).
+    Routine routine;
     if (ref.read(networkStatusProvider)) {
-      routine = await notifier.fetchAndSetRoutineFull(routineId);
+      try {
+        routine = await notifier.fetchAndSetRoutineFull(routineId);
+      } catch (_) {
+        // Server unreachable or timed out: fall back to the locally-cached
+        // routine so training can continue offline.
+        final cached = cachedRoutine();
+        if (cached == null || !cached.isHydrated) {
+          rethrow;
+        }
+        routine = cached;
+      }
     } else {
       // Offline: use the local routine data. Reaching the gym mode requires an
       // already-downloaded routine, so the routine is normally present
-      final cached = ref
-          .read(routinesRiverpodProvider)
-          .value
-          ?.routines
-          .firstWhereOrNull((r) => r.id == routineId);
+      final cached = cachedRoutine();
       if (cached == null || !cached.isHydrated) {
         throw StateError('Routine $routineId is not available offline');
       }
