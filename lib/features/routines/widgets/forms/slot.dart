@@ -93,7 +93,7 @@ class _SlotDetailWidgetState extends ConsumerState<SlotDetailWidget> {
               ? ProgressionRulesInfoBox(entry.exerciseObj)
               : SlotEntryForm(entry, widget.routineId, simpleMode: widget.simpleMode),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 8),
         if (isOnline && (_showExerciseSearchBox || widget.slot.entries.isEmpty))
           ExerciseAutocompleter(
             onExerciseSelected: (exercise) async {
@@ -128,7 +128,7 @@ class _SlotDetailWidgetState extends ConsumerState<SlotDetailWidget> {
                 : null,
             child: Text(i18n.addSuperset),
           ),
-        const SizedBox(height: 5),
+        const SizedBox(height: 4),
       ],
     );
   }

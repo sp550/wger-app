@@ -128,7 +128,7 @@ class _SessionFormState extends ConsumerState<SessionForm> {
             },
           ),
           Row(
-            spacing: 10,
+            spacing: 8,
             children: [
               Flexible(
                 child: TimeInputWidget(
@@ -150,7 +150,7 @@ class _SessionFormState extends ConsumerState<SessionForm> {
               ),
             ],
           ),
-          const SizedBox(height: 5),
+          const SizedBox(height: 4),
           FormSubmitButton(
             key: const ValueKey('save-button'),
             label: AppLocalizations.of(context).save,

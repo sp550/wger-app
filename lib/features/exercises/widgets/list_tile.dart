@@ -29,7 +29,7 @@ class ExerciseListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const double IMG_SIZE = 60;
+    const double IMG_SIZE = 64;
 
     return ListTile(
       leading: SizedBox(

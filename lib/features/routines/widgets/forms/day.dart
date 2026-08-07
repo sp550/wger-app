@@ -296,7 +296,7 @@ class _DayFormWidgetState extends ConsumerState<DayFormWidget> {
                     });
                   },
           ),
-          const SizedBox(height: 5),
+          const SizedBox(height: 4),
           FormSubmitButton(
             key: const Key(SUBMIT_BUTTON_KEY_NAME),
             enabled: isOnline,
@@ -310,7 +310,7 @@ class _DayFormWidgetState extends ConsumerState<DayFormWidget> {
               await ref.read(routinesRiverpodProvider.notifier).editDay(widget.day);
             },
           ),
-          const SizedBox(height: 5),
+          const SizedBox(height: 4),
           ReorderableSlotList(widget.day.slots, widget.day),
         ],
       ),

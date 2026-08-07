@@ -58,7 +58,7 @@ class _IngredientFilterRowState extends ConsumerState<IngredientFilterRow> {
     // clear-icon's visibility depends on the search term, so it lives in
     // its own Consumer
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 15),
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
       child: Row(
         children: [
           Expanded(
@@ -67,7 +67,7 @@ class _IngredientFilterRowState extends ConsumerState<IngredientFilterRow> {
               decoration: InputDecoration(
                 hintText: '${i18n.searchIngredient}...',
                 prefixIcon: const Icon(Icons.search),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 10),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 12),
                 border: const OutlineInputBorder(
                   borderSide: BorderSide(color: Colors.black),
                 ),

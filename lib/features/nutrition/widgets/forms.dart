@@ -56,7 +56,7 @@ class MealForm extends ConsumerWidget {
     final isCreating = _meal.id == null;
 
     return Container(
-      margin: const EdgeInsets.all(20),
+      margin: const EdgeInsets.all(16),
       child: Form(
         key: _form,
         child: Column(
@@ -236,7 +236,7 @@ class IngredientFormState extends ConsumerState<IngredientForm> {
     final numberFormat = localizedNumberFormat(context);
 
     return Container(
-      margin: const EdgeInsets.all(20),
+      margin: const EdgeInsets.all(16),
       child: Form(
         key: _form,
         child: Column(
@@ -407,9 +407,9 @@ class IngredientFormState extends ConsumerState<IngredientForm> {
                 Navigator.of(context).pop();
               },
             ),
-            if (suggestions.isNotEmpty) const SizedBox(height: 10.0),
+            if (suggestions.isNotEmpty) const SizedBox(height: 8),
             Container(
-              padding: const EdgeInsets.all(10.0),
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
               child: Text(AppLocalizations.of(context).recentlyUsedIngredients),
             ),
             Expanded(
@@ -455,7 +455,7 @@ class IngredientFormState extends ConsumerState<IngredientForm> {
                               );
                             },
                           ),
-                          const SizedBox(width: 5),
+                          const SizedBox(width: 4),
                           const Icon(Icons.copy),
                         ],
                       ),

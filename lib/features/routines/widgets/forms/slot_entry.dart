@@ -228,7 +228,7 @@ class _SlotEntryFormState extends ConsumerState<SlotEntryForm> {
               onChanged: (value) => widget.entry.weightUnit = value,
             ),
           Row(
-            spacing: 10,
+            spacing: 8,
             children: [
               Flexible(
                 child: DecimalInputWidget(
@@ -259,7 +259,7 @@ class _SlotEntryFormState extends ConsumerState<SlotEntryForm> {
               onChanged: (value) => widget.entry.repetitionUnit = value,
             ),
           Row(
-            spacing: 10,
+            spacing: 8,
             children: [
               Flexible(
                 child: DecimalInputWidget(
@@ -286,7 +286,7 @@ class _SlotEntryFormState extends ConsumerState<SlotEntryForm> {
           ),
           if (!widget.simpleMode)
             Row(
-              spacing: 10,
+              spacing: 8,
               children: [
                 Flexible(
                   child: TextFormField(
@@ -315,7 +315,7 @@ class _SlotEntryFormState extends ConsumerState<SlotEntryForm> {
               rirController.text == '' ? null : num.parse(rirController.text),
               onChanged: (value) => rirController.text = value,
             ),
-          const SizedBox(height: 5),
+          const SizedBox(height: 4),
           FormSubmitButton(
             key: const Key(SUBMIT_BUTTON_KEY_NAME),
             enabled: isOnline,
@@ -357,7 +357,7 @@ class _SlotEntryFormState extends ConsumerState<SlotEntryForm> {
               await provider.editSlotEntry(widget.entry, widget.routineId);
             },
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 8),
         ],
       ),
     );
@@ -392,7 +392,7 @@ class _SlotDetailWidgetState extends ConsumerState<SlotDetailWidget> {
               ? ProgressionRulesInfoBox(entry.exerciseObj)
               : SlotEntryForm(entry, widget.routineId, simpleMode: widget.simpleMode),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 8),
         if (_showExerciseSearchBox || widget.slot.entries.isEmpty)
           ExerciseAutocompleter(
             onExerciseSelected: (exercise) async {
@@ -425,7 +425,7 @@ class _SlotDetailWidgetState extends ConsumerState<SlotDetailWidget> {
             },
             child: Text(i18n.addSuperset),
           ),
-        const SizedBox(height: 5),
+        const SizedBox(height: 4),
       ],
     );
   }

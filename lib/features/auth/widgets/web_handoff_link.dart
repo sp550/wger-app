@@ -38,7 +38,7 @@ class WebHandoffLink extends StatelessWidget {
       child: Opacity(
         opacity: isEnabled ? 1.0 : 0.5,
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -47,10 +47,10 @@ class WebHandoffLink extends StatelessWidget {
                 children: [
                   Icon(
                     Icons.open_in_new,
-                    size: 14,
+                    size: 16,
                     color: theme.colorScheme.primary,
                   ),
-                  const SizedBox(width: 6),
+                  const SizedBox(width: 8),
                   Text(
                     i18n.webHandoffLinkLabel,
                     style: theme.textTheme.bodyMedium?.copyWith(
@@ -60,7 +60,7 @@ class WebHandoffLink extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 2),
+              const SizedBox(height: 4),
               Text(
                 i18n.webHandoffLinkSubtitle,
                 style: theme.textTheme.bodySmall?.copyWith(

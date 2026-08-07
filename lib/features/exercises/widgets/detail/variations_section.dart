@@ -51,7 +51,7 @@ class VariationsSection extends ConsumerWidget {
           const Text('-/-')
         else
           ...variations.map((e) => ExerciseListTile(exercise: e)),
-        const SizedBox(height: 9),
+        const SizedBox(height: 8),
       ],
     );
   }

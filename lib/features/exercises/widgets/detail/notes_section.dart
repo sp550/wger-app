@@ -39,7 +39,7 @@ class NotesSection extends StatelessWidget {
           style: Theme.of(context).textTheme.headlineSmall,
         ),
         ...translation.notes.map((e) => Text(e.comment)),
-        const SizedBox(height: 9),
+        const SizedBox(height: 8),
       ],
     );
   }

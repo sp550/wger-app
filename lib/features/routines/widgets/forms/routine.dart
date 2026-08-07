@@ -147,7 +147,7 @@ class _RoutineFormState extends ConsumerState<RoutineForm> {
           });
         },
       ),
-      const SizedBox(height: 5),
+      const SizedBox(height: 4),
       SwitchListTile(
         title: Text(i18n.fitInWeek),
         subtitle: Text(i18n.fitInWeekHelp),
@@ -167,7 +167,7 @@ class _RoutineFormState extends ConsumerState<RoutineForm> {
           }
         },
       ),
-      const SizedBox(height: 5),
+      const SizedBox(height: 4),
       // Creating a routine needs the server to assign an integer PK; editing an
       // existing one syncs through PowerSync and works offline.
       FormSubmitButton(

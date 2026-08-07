@@ -110,7 +110,7 @@ class _AddExerciseStepperState extends ConsumerState<AddExerciseStepper> {
   Widget _controlsBuilder(BuildContext context, ControlsDetails details) {
     return Column(
       children: [
-        const SizedBox(height: 10),
+        const SizedBox(height: 8),
         if (_currentStep == lastStepIndex) errorWidget,
         if (_languageError != null && details.stepIndex == _currentStep)
           Padding(
@@ -337,7 +337,7 @@ class EmailNotVerified extends ConsumerWidget {
     return Scaffold(
       appBar: EmptyAppBar(AppLocalizations.of(context).unVerifiedEmail),
       body: Container(
-        padding: const EdgeInsets.all(25),
+        padding: const EdgeInsets.all(24),
         child: Center(
           child: Card(
             child: Column(

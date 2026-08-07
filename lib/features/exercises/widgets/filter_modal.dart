@@ -43,7 +43,7 @@ class _ExerciseFilterModalBodyState extends ConsumerState<ExerciseFilterModalBod
     final theme = Theme.of(context);
 
     return Padding(
-      padding: const EdgeInsets.all(20.0),
+      padding: const EdgeInsets.all(16),
       child: SingleChildScrollView(
         child: ExpansionPanelList(
           dividerColor: Colors.transparent,

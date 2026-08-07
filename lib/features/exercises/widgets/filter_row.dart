@@ -60,7 +60,7 @@ class _FilterRowState extends ConsumerState<FilterRow> {
   Widget build(BuildContext context) {
     final isOnline = ref.watch(networkStatusProvider);
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 15),
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
       child: Row(
         children: [
           Expanded(
@@ -68,7 +68,7 @@ class _FilterRowState extends ConsumerState<FilterRow> {
               controller: _exerciseNameController,
               decoration: InputDecoration(
                 hintText: '${AppLocalizations.of(context).exerciseName}...',
-                contentPadding: const EdgeInsets.symmetric(horizontal: 10),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 12),
                 border: const OutlineInputBorder(
                   borderSide: BorderSide(color: Colors.black),
                 ),
@@ -83,8 +83,8 @@ class _FilterRowState extends ConsumerState<FilterRow> {
                     context: context,
                     shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(20),
-                        topRight: Radius.circular(20),
+                        topLeft: Radius.circular(16),
+                        topRight: Radius.circular(16),
                       ),
                     ),
                     builder: (context) => const ExerciseFilterModalBody(),
@@ -116,7 +116,7 @@ class _FilterRowState extends ConsumerState<FilterRow> {
                   ];
                 },
                 shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                  borderRadius: BorderRadius.all(Radius.circular(12)),
                 ),
                 onSelected: (ExerciseMoreOption selectedOption) {
                   switch (selectedOption) {

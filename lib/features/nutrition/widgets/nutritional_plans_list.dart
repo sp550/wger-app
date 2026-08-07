@@ -110,7 +110,7 @@ class NutritionalPlansList extends riverpod.ConsumerWidget {
           return const TextPrompt();
         }
         return ListView.builder(
-          padding: const EdgeInsets.all(10.0),
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
           itemCount: plans.length,
           itemBuilder: (context, index) {
             final currentPlan = plans[index];

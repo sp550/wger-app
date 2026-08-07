@@ -30,7 +30,7 @@ class IngredientListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context);
-    const double IMG_SIZE = 60;
+    const double IMG_SIZE = 64;
     final String macros =
         'P: ${ingredient.protein}g / C: ${ingredient.carbohydrates}g / F: ${ingredient.fat}g';
 

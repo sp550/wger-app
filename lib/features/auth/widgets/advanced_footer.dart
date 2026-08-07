@@ -55,8 +55,8 @@ class AdvancedFooter extends StatelessWidget {
         children: [
           if (active) ...[
             Container(
-              width: 6,
-              height: 6,
+              width: 8,
+              height: 8,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: theme.colorScheme.primary,
@@ -73,7 +73,7 @@ class AdvancedFooter extends StatelessWidget {
             ),
           ),
           if (active) ...[
-            const SizedBox(width: 6),
+            const SizedBox(width: 8),
             Flexible(
               child: Text(
                 '· $suffix',
@@ -88,7 +88,7 @@ class AdvancedFooter extends StatelessWidget {
           const SizedBox(width: 4),
           Icon(
             Icons.keyboard_arrow_down,
-            size: 14,
+            size: 16,
             color: theme.colorScheme.outline,
           ),
         ],

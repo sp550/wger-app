@@ -36,7 +36,7 @@ class ExerciseDetailScreen extends StatelessWidget {
       ),
       body: WidescreenWrapper(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 16),
           child: ExerciseDetail(exercise),
         ),
       ),

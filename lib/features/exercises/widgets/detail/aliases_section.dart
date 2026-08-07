@@ -40,7 +40,7 @@ class AliasesSection extends StatelessWidget {
             translation.aliases.map((e) => e.alias).toList().join(', '),
           ),
         ),
-        const SizedBox(height: 9),
+        const SizedBox(height: 8),
       ],
     );
   }

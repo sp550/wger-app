@@ -36,7 +36,7 @@ class VideosSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ...exercise.videos.map((v) => ExerciseVideoWidget(video: v)),
-        const SizedBox(height: 9),
+        const SizedBox(height: 8),
       ],
     );
   }
