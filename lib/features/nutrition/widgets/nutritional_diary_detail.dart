@@ -45,7 +45,7 @@ class NutritionalDiaryDetailWidget extends StatelessWidget {
           child: Column(
             children: [
               Container(
-                padding: const EdgeInsets.all(15),
+                padding: const EdgeInsets.all(16),
                 height: 220,
                 child: FlNutritionalPlanPieChartWidget(valuesLogged),
               ),
@@ -59,7 +59,7 @@ class NutritionalDiaryDetailWidget extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(height: 15),
+        const SizedBox(height: 16),
         const DiaryheaderTile(),
         ...logs.map(
           (e) => DiaryEntryTile(diaryEntry: e, nutritionalPlan: _nutritionalPlan),
@@ -76,7 +76,7 @@ class NutritionDiaryTable extends StatelessWidget {
     required this.logged,
   });
 
-  static const double tablePadding = 7;
+  static const double tablePadding = 8;
   final NutritionalValues planned;
   final NutritionalValues logged;
 

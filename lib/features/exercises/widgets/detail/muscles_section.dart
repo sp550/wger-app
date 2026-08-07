@@ -41,7 +41,7 @@ class MusclesSection extends StatelessWidget {
           children: [
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 9),
+                padding: const EdgeInsets.symmetric(horizontal: 8),
                 child: MuscleWidget(
                   muscles: exercise.muscles,
                   musclesSecondary: exercise.musclesSecondary,
@@ -51,7 +51,7 @@ class MusclesSection extends StatelessWidget {
             ),
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 9),
+                padding: const EdgeInsets.symmetric(horizontal: 8),
                 child: MuscleWidget(
                   muscles: exercise.muscles,
                   musclesSecondary: exercise.musclesSecondary,
@@ -68,7 +68,7 @@ class MusclesSection extends StatelessWidget {
             ...exercise.muscles.map((e) => Text(e.nameTranslated(context))),
           ],
         ),
-        const SizedBox(height: 9),
+        const SizedBox(height: 8),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -76,7 +76,7 @@ class MusclesSection extends StatelessWidget {
             ...exercise.musclesSecondary.map((e) => Text(e.name)),
           ],
         ),
-        const SizedBox(height: 9),
+        const SizedBox(height: 8),
       ],
     );
   }

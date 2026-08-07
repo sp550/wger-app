@@ -100,10 +100,10 @@ class _AdvancedSheetState extends State<AdvancedSheet> {
     return SingleChildScrollView(
       child: Padding(
         padding: EdgeInsets.fromLTRB(
-          22,
+          24,
           0,
-          22,
-          26 + MediaQuery.viewInsetsOf(context).bottom,
+          24,
+          24 + MediaQuery.viewInsetsOf(context).bottom,
         ),
         child: Form(
           key: _formKey,
@@ -155,7 +155,7 @@ class _AdvancedSheetState extends State<AdvancedSheet> {
               ),
               if (!_hideCustomServer)
                 Padding(
-                  padding: const EdgeInsets.only(top: 2, bottom: 4),
+                  padding: const EdgeInsets.only(top: 4, bottom: 4),
                   child: ServerField(controller: widget.serverUrlController),
                 ),
               // Stays visible for the official server so the option is
@@ -197,7 +197,7 @@ class _AdvancedSheetState extends State<AdvancedSheet> {
               ],
               const SizedBox(height: 16),
               SizedBox(
-                height: 45,
+                height: 48,
                 child: ElevatedButton(
                   key: const Key('advancedDoneButton'),
                   onPressed: () {
@@ -233,7 +233,7 @@ class _SectionLabel extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Padding(
-      padding: const EdgeInsets.only(top: 14, bottom: 8),
+      padding: const EdgeInsets.only(top: 16, bottom: 8),
       child: Text(
         text.toUpperCase(),
         style: theme.textTheme.labelSmall?.copyWith(
@@ -270,31 +270,31 @@ class _OptionRow extends StatelessWidget {
       child: Ink(
         decoration: BoxDecoration(
           color: selected ? scheme.primaryContainer : scheme.surfaceContainerLow,
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: selected ? scheme.primary : Colors.transparent,
             width: 1,
           ),
         ),
         child: InkWell(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(12),
           onTap: onTap,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             child: Row(
               children: [
                 Container(
-                  width: 36,
-                  height: 36,
+                  width: 40,
+                  height: 40,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
                     color: selected ? scheme.primary : scheme.surface,
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(12),
                     border: selected ? null : Border.all(color: scheme.outlineVariant),
                   ),
                   child: Icon(
                     icon,
-                    size: 18,
+                    size: 20,
                     color: selected ? scheme.onPrimary : scheme.primary,
                   ),
                 ),
@@ -304,7 +304,7 @@ class _OptionRow extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(title, style: textTheme.titleSmall),
-                      const SizedBox(height: 2),
+                      const SizedBox(height: 4),
                       if (detail != null)
                         Text(
                           detail!,

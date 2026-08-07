@@ -76,7 +76,7 @@ class MuscleColorHelper extends StatelessWidget {
           width: 16,
           color: main ? COLOR_MAIN_MUSCLES : COLOR_SECONDARY_MUSCLES,
         ),
-        const SizedBox(width: 2),
+        const SizedBox(width: 4),
         Text(
           main
               ? AppLocalizations.of(context).muscles
@@ -187,7 +187,7 @@ class _CarouselImagesState extends State<CarouselImages> {
             items: List.generate(
               widget.images.length,
               (index) => Padding(
-                padding: const EdgeInsets.only(top: 15),
+                padding: const EdgeInsets.only(top: 16),
                 child: ExerciseImageWidget(
                   image: widget.images[index],
                   height: 260,
@@ -198,7 +198,7 @@ class _CarouselImagesState extends State<CarouselImages> {
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
-            spacing: 5,
+            spacing: 4,
             children: List.generate(
               widget.images.length,
               (index) => AnimatedContainer(

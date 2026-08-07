@@ -49,7 +49,7 @@ class IngredientDetailScreen extends ConsumerWidget {
             return const Center(child: Icon(Icons.help_outline, size: 48));
           }
           return Padding(
-            padding: const EdgeInsets.all(10.0),
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
             child: SingleChildScrollView(
               child: IngredientDetails(ingredient),
             ),

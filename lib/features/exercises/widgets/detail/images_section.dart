@@ -35,7 +35,7 @@ class ImagesSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CarouselImages(images: exercise.images),
-        const SizedBox(height: 9),
+        const SizedBox(height: 8),
       ],
     );
   }

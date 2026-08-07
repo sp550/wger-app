@@ -168,7 +168,7 @@ class _ControlsOverlay extends StatelessWidget {
                 // horizontally, so it feels like it would need more spacing
                 // horizontally (matching the aspect ratio of the video).
                 vertical: 8,
-                horizontal: 9,
+                horizontal: 8,
               ),
               child: Text('${controller.value.playbackSpeed}x'),
             ),

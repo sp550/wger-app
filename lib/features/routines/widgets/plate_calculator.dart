@@ -17,9 +17,9 @@ class PlateWeight extends StatelessWidget {
     required this.value,
     required this.color,
     this.isSelected = true,
-    this.size = 50,
+    this.size = 48,
     this.padding = 8,
-    this.margin = 3,
+    this.margin = 4,
   });
 
   @override
@@ -83,7 +83,7 @@ class _AddPlateWeightsState extends ConsumerState<ConfigureAvailablePlates> {
       mainAxisSize: MainAxisSize.max,
       children: [
         Padding(
-          padding: const EdgeInsets.all(10),
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
           child: DropdownMenu<WeightUnitEnum>(
             key: const ValueKey('weightUnitDropdown'),
             width: double.infinity,
@@ -107,7 +107,7 @@ class _AddPlateWeightsState extends ConsumerState<ConfigureAvailablePlates> {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.all(10),
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
           child: DropdownMenu<num>(
             key: const ValueKey('barWeightDropdown'),
             width: double.infinity,

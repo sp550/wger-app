@@ -39,9 +39,9 @@ class _AddExerciseDropdownButtonState extends State<AddExerciseDropdownButton> {
         },
         initialValue: _selectedItem,
         decoration: InputDecoration(
-          contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
           border: const OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(10)),
+            borderRadius: BorderRadius.all(Radius.circular(12)),
           ),
           labelText: widget.title,
           alignLabelWithHint: true,

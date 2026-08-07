@@ -53,7 +53,7 @@ class NutritionalDiaryScreen extends StatelessWidget {
             ref.watch(nutritionProvider);
             return SingleChildScrollView(
               child: Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
                 child: NutritionalDiaryDetailWidget(args.plan, args.date),
               ),
             );

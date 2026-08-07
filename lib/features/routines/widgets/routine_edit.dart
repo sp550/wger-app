@@ -47,12 +47,12 @@ class _RoutineEditState extends State<RoutineEdit> {
     }
 
     return Padding(
-      padding: const EdgeInsets.all(8),
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
       child: SingleChildScrollView(
         child: Column(
           children: [
             RoutineForm(widget._routine, useListView: false),
-            Container(height: 10),
+            const SizedBox(height: 8),
             Text(i18n.routineDays, style: Theme.of(context).textTheme.titleLarge),
             ReorderableDaysList(
               routineId: widget._routine.id!,
@@ -69,7 +69,7 @@ class _RoutineEditState extends State<RoutineEdit> {
               },
             ),
             if (selectedDay != null) DayFormWidget(key: ValueKey(selectedDayId), day: selectedDay),
-            const SizedBox(height: 25),
+            const SizedBox(height: 24),
             Text(i18n.resultingRoutine, style: Theme.of(context).textTheme.titleLarge),
             const Divider(),
             RoutineDetail(widget._routine, viewMode: true),

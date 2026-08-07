@@ -56,10 +56,10 @@ class AuthScreen extends StatelessWidget {
                     height: 85,
                   ),
                   Container(
-                    margin: const EdgeInsets.only(bottom: 20.0),
+                    margin: const EdgeInsets.only(bottom: 16.0),
                     padding: const EdgeInsets.symmetric(
                       vertical: 8.0,
-                      horizontal: 94.0,
+                      horizontal: 96.0,
                     ),
                     child: const Text(
                       'wger',

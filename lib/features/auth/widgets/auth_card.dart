@@ -301,7 +301,7 @@ class _AuthCardState extends ConsumerState<AuthCard> {
       errorMessage = FormHttpErrorsWidget(_httpError!);
     } else if (_showNetworkError) {
       errorMessage = Padding(
-        padding: const EdgeInsets.only(bottom: 10),
+        padding: const EdgeInsets.only(bottom: 8),
         child: Text(
           i18n.errorCouldNotConnectToServer,
           textAlign: TextAlign.center,
@@ -312,13 +312,13 @@ class _AuthCardState extends ConsumerState<AuthCard> {
 
     return Card(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15.0),
+        borderRadius: BorderRadius.circular(12.0),
       ),
       elevation: 8.0,
       child: Container(
         width: deviceSize.width * 0.9,
         padding: EdgeInsets.symmetric(
-          horizontal: 15.0,
+          horizontal: 16.0,
           vertical: 0.025 * deviceSize.height,
         ),
         child: Form(
@@ -332,7 +332,7 @@ class _AuthCardState extends ConsumerState<AuthCard> {
                 children: [
                   if (sessionExpired && _authMode == AuthMode.login)
                     Padding(
-                      padding: const EdgeInsets.only(bottom: 10),
+                      padding: const EdgeInsets.only(bottom: 8),
                       child: Text(
                         i18n.sessionExpired,
                         textAlign: TextAlign.center,
@@ -362,13 +362,13 @@ class _AuthCardState extends ConsumerState<AuthCard> {
                       onTap: _isLoading ? null : _launchWebHandoff,
                     ),
 
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 16),
                   // Bespoke submit:  the shared FormSubmitButton only surfaces
                   // WgerHttpException and has no style override, so it is
                   // intentionally not used here.
                   SizedBox(
                     width: double.infinity,
-                    height: 45,
+                    height: 48,
                     child: ElevatedButton(
                       key: const Key('actionButton'),
                       onPressed: isOnline

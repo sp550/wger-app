@@ -179,7 +179,7 @@ class _IngredientTypeaheadState extends ConsumerState<IngredientTypeahead> {
             if (ingredient.isVegan == true) {
               chips.add(
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
                     color: Colors.green[100],
                     borderRadius: BorderRadius.circular(8),
@@ -193,7 +193,7 @@ class _IngredientTypeaheadState extends ConsumerState<IngredientTypeahead> {
             } else if (ingredient.isVegetarian == true) {
               chips.add(
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
                     color: Colors.green[100],
                     borderRadius: BorderRadius.circular(8),

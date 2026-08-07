@@ -91,9 +91,15 @@ class WeightOverview extends riverpod.ConsumerWidget {
                     child: ListTile(
                       title: Text(
                         '${numberFormat.format(currentEntry.weight)} ${weightUnit(profile.isMetric, context)}',
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          fontFeatures: const [FontFeature.tabularFigures()],
+                        ),
                       ),
                       subtitle: Text(
                         localizedDate(context).add_Hm().format(currentEntry.date),
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          fontFeatures: const [FontFeature.tabularFigures()],
+                        ),
                       ),
                       trailing: PopupMenuButton(
                         itemBuilder: (BuildContext context) {

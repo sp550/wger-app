@@ -98,7 +98,7 @@ class _ExerciseAutocompleterState extends ConsumerState<ExerciseAutocompleter> {
               ) => ListTile(
                 key: Key('exercise-${exercise.id}'),
                 leading: SizedBox(
-                  width: 45,
+                  width: 48,
                   child: ExerciseImageWidget(
                     image: exercise.getMainImage,
                   ),
@@ -132,7 +132,7 @@ class _ExerciseAutocompleterState extends ConsumerState<ExerciseAutocompleter> {
                             size: 16,
                             color: Theme.of(context).colorScheme.outline,
                           ),
-                          const SizedBox(width: 6),
+                          const SizedBox(width: 8),
                         ],
                         Text(AppLocalizations.of(context).contributeExercise),
                       ],

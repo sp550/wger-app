@@ -83,12 +83,12 @@ class _SearchModeSegmented extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SizedBox(height: 10),
+        const SizedBox(height: 8),
         Text(
           i18n.exerciseSearchMode,
           style: Theme.of(context).textTheme.titleMedium,
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 8),
         SegmentedButton<ExerciseSearchMode>(
           style: SegmentedButton.styleFrom(
             selectedBackgroundColor: Theme.of(context).colorScheme.primaryContainer,
@@ -130,12 +130,12 @@ class _CategoryChipsWrap extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SizedBox(height: 10),
+        const SizedBox(height: 8),
         Text(
           i18n.category,
           style: Theme.of(context).textTheme.titleMedium,
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 8),
         Wrap(
           spacing: 8.0,
           runSpacing: 4.0,
