@@ -1,6 +1,5 @@
 name: Continous Integration
 on:
-  workflow_dispatch:
   push:
     paths:
       - '**.dart'
