@@ -222,17 +222,19 @@ class _DashboardRoutineWidgetState extends ConsumerState<DashboardRoutineWidget>
             if (heroDay != null && !isRestDay)
               SizedBox(
                 width: double.infinity,
-                child: FilledButton.icon(
-                  key: const ValueKey('dashboard-start-workout'),
-                  style: FilledButton.styleFrom(
-                    minimumSize: const Size.fromHeight(56),
-                    textStyle: theme.textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w700,
+                child: PressableScale(
+                  child: FilledButton.icon(
+                    key: const ValueKey('dashboard-start-workout'),
+                    style: FilledButton.styleFrom(
+                      minimumSize: const Size.fromHeight(56),
+                      textStyle: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
+                    icon: const Icon(Icons.play_arrow),
+                    label: Text(i18n.start),
+                    onPressed: () => _startGymMode(context, heroDay),
                   ),
-                  icon: const Icon(Icons.play_arrow),
-                  label: Text(i18n.start),
-                  onPressed: () => _startGymMode(context, heroDay),
                 ),
               ),
             const SizedBox(height: 8),
@@ -277,61 +279,80 @@ class _DashboardRoutineWidgetState extends ConsumerState<DashboardRoutineWidget>
         ? ref.watch(routineHydrationProvider(currentId))
         : null;
 
-    return AsyncValueWidget<RoutinesState>(
-      value: asyncState,
-      loggerName: 'DashboardRoutineWidget',
-      loading: _shell(
-        context,
-        title: i18n.labelWorkoutPlan,
-        subtitle: '',
-        trailing: const SizedBox(
-          height: 20,
-          width: 20,
-          child: CircularProgressIndicator(strokeWidth: 2),
+    // The hero card fades between loading / error / empty / data instead of
+    // popping in. Keyed on the state kind so a refresh that keeps the same
+    // kind (e.g. hydration finishing) doesn't re-run the cross-fade.
+    final reduceMotion = MediaQuery.disableAnimationsOf(context);
+
+    return AnimatedSwitcher(
+      duration: reduceMotion ? Duration.zero : const Duration(milliseconds: 200),
+      switchInCurve: Curves.easeOutCubic,
+      switchOutCurve: Curves.easeInCubic,
+      child: KeyedSubtree(
+        key: ValueKey<String>(
+          asyncState.when(
+            data: (state) => state.currentRoutine == null ? 'hero-empty' : 'hero-data',
+            loading: () => 'hero-loading',
+            error: (_, _) => 'hero-error',
+          ),
         ),
-      ),
-      errorBuilder: (e, st) => _shell(
-        context,
-        title: i18n.labelWorkoutPlan,
-        subtitle: i18n.anErrorOccurred,
-        trailing: const Icon(Icons.error_outline, color: Colors.red),
-        child: StreamErrorIndicator(e, stacktrace: st),
-      ),
-      data: (state) {
-        final routine = state.currentRoutine;
-
-        // Offline and never fetched: the structure is unavailable, so lock
-        // the detail UI instead of showing an empty block.
-        final detailsLocked = routine != null && !isOnline && !routine.isHydrated;
-
-        if (routine == null) {
-          return _shell(
+        child: AsyncValueWidget<RoutinesState>(
+          value: asyncState,
+          loggerName: 'DashboardRoutineWidget',
+          loading: _shell(
             context,
             title: i18n.labelWorkoutPlan,
             subtitle: '',
-            trailing: const SizedBox(),
-            child: NothingFound(
-              i18n.noRoutines,
-              i18n.newRoutine,
-              RoutineForm(Routine.empty()),
+            trailing: const SizedBox(
+              height: 20,
+              width: 20,
+              child: CircularProgressIndicator(strokeWidth: 2),
             ),
-          );
-        }
+          ),
+          errorBuilder: (e, st) => _shell(
+            context,
+            title: i18n.labelWorkoutPlan,
+            subtitle: i18n.anErrorOccurred,
+            trailing: const Icon(Icons.error_outline, color: Colors.red),
+            child: StreamErrorIndicator(e, stacktrace: st),
+          ),
+          data: (state) {
+            final routine = state.currentRoutine;
 
-        final isHydrating = hydration?.isLoading ?? false;
-        final days = routine.dayDataCurrentIterationFiltered;
+            // Offline and never fetched: the structure is unavailable, so lock
+            // the detail UI instead of showing an empty block.
+            final detailsLocked = routine != null && !isOnline && !routine.isHydrated;
 
-        // During hydration the day structure is still loading: the hero card
-        // shows the routine name plus a spinner instead of exercise rows and
-        // the start button (which would have no data to log against yet).
-        return _heroCard(
-          context,
-          routine: routine,
-          days: days,
-          isHydrating: isHydrating,
-          detailsLocked: detailsLocked,
-        );
-      },
+            if (routine == null) {
+              return _shell(
+                context,
+                title: i18n.labelWorkoutPlan,
+                subtitle: '',
+                trailing: const SizedBox(),
+                child: NothingFound(
+                  i18n.noRoutines,
+                  i18n.newRoutine,
+                  RoutineForm(Routine.empty()),
+                ),
+              );
+            }
+
+            final isHydrating = hydration?.isLoading ?? false;
+            final days = routine.dayDataCurrentIterationFiltered;
+
+            // During hydration the day structure is still loading: the hero card
+            // shows the routine name plus a spinner instead of exercise rows and
+            // the start button (which would have no data to log against yet).
+            return _heroCard(
+              context,
+              routine: routine,
+              days: days,
+              isHydrating: isHydrating,
+              detailsLocked: detailsLocked,
+            );
+          },
+        ),
+      ),
     );
   }
 }

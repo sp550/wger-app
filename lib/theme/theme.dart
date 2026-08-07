@@ -41,6 +41,24 @@ const FlexSubThemesData wgerSubThemeData = FlexSubThemesData(
   navigationBarHeight: 56,
 );
 
+/// App-wide page transition: a fast, quiet Material fade+slide for pushes and
+/// pops on every platform, with the native Cupertino slide (and swipe-back
+/// gesture) kept on iOS and macOS. Applied once at the theme level so every
+/// route gets the same treatment instead of per-navigation hacks.
+///
+/// The Material builders honour the "remove animations" accessibility setting
+/// themselves (they render the child directly when animations are disabled).
+const PageTransitionsTheme wgerPageTransitionsTheme = PageTransitionsTheme(
+  builders: <TargetPlatform, PageTransitionsBuilder>{
+    TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
+    TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+    TargetPlatform.linux: FadeUpwardsPageTransitionsBuilder(),
+    TargetPlatform.macOS: CupertinoPageTransitionsBuilder(),
+    TargetPlatform.windows: FadeUpwardsPageTransitionsBuilder(),
+    TargetPlatform.fuchsia: FadeUpwardsPageTransitionsBuilder(),
+  },
+);
+
 const String wgerDisplayFont = 'RobotoCondensed';
 const List<FontVariation> displayFontBoldWeight = [FontVariation('wght', 600)];
 const List<FontVariation> displayFontHeavyWeight = [FontVariation('wght', 800)];
@@ -127,14 +145,14 @@ final wgerLightTheme = FlexThemeData.light(
   appBarStyle: FlexAppBarStyle.primary,
   subThemesData: wgerSubThemeData,
   textTheme: wgerTextTheme,
-);
+).copyWith(pageTransitionsTheme: wgerPageTransitionsTheme);
 
 final wgerDarkTheme = FlexThemeData.dark(
   colorScheme: schemeDark,
   useMaterial3: true,
   subThemesData: wgerSubThemeData,
   textTheme: wgerTextTheme,
-);
+).copyWith(pageTransitionsTheme: wgerPageTransitionsTheme);
 
 final wgerLightThemeHc = FlexThemeData.light(
   colorScheme: schemeLightHc,
@@ -142,14 +160,14 @@ final wgerLightThemeHc = FlexThemeData.light(
   appBarStyle: FlexAppBarStyle.primary,
   subThemesData: wgerSubThemeData,
   textTheme: wgerTextTheme,
-);
+).copyWith(pageTransitionsTheme: wgerPageTransitionsTheme);
 
 final wgerDarkThemeHc = FlexThemeData.dark(
   colorScheme: schemeDarkHc,
   useMaterial3: true,
   subThemesData: wgerSubThemeData,
   textTheme: wgerTextTheme,
-);
+).copyWith(pageTransitionsTheme: wgerPageTransitionsTheme);
 
 CalendarStyle getWgerCalendarStyle(ThemeData theme) {
   return CalendarStyle(

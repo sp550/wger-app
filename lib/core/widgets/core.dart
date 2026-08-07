@@ -18,6 +18,69 @@
 
 import 'package:flutter/material.dart';
 
+/// Subtle press feedback for hero/primary actions (the big 56dp buttons and
+/// hero cards): the child scales down and dims slightly while pressed and
+/// springs back on release, on top of the Material ripple the button already
+/// shows. Quick and quiet, and skipped entirely when the user has "remove
+/// animations" enabled.
+class PressableScale extends StatefulWidget {
+  const PressableScale({
+    super.key,
+    required this.child,
+    this.pressedScale = 0.97,
+    this.pressedOpacity = 0.85,
+  });
+
+  final Widget child;
+
+  /// Scale applied while the child is pressed.
+  final double pressedScale;
+
+  /// Opacity applied while the child is pressed.
+  final double pressedOpacity;
+
+  @override
+  State<PressableScale> createState() => _PressableScaleState();
+}
+
+class _PressableScaleState extends State<PressableScale> {
+  bool _pressed = false;
+
+  void _setPressed(bool pressed) {
+    if (_pressed == pressed) {
+      return;
+    }
+    setState(() => _pressed = pressed);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final reduceMotion = MediaQuery.disableAnimationsOf(context);
+    final pressed = _pressed && !reduceMotion;
+
+    // A raw [Listener] observes the pointer without joining the gesture
+    // arena, so the wrapped button keeps its own tap handling (Material
+    // ripple + onPressed) untouched.
+    return Listener(
+      behavior: HitTestBehavior.deferToChild,
+      onPointerDown: (_) => _setPressed(true),
+      onPointerUp: (_) => _setPressed(false),
+      onPointerCancel: (_) => _setPressed(false),
+      child: AnimatedScale(
+        scale: pressed ? widget.pressedScale : 1.0,
+        duration: const Duration(milliseconds: 120),
+        curve: Curves.easeOutCubic,
+        child: AnimatedOpacity(
+          opacity: pressed ? widget.pressedOpacity : 1.0,
+          duration: const Duration(milliseconds: 120),
+          curve: Curves.easeOutCubic,
+          child: widget.child,
+        ),
+      ),
+    );
+  }
+}
+
 class MutedText extends StatelessWidget {
   final String _text;
   final TextAlign textAlign;

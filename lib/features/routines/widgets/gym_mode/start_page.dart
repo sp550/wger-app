@@ -284,7 +284,7 @@ class StartPage extends ConsumerWidget {
             ref.read(gymStateProvider.notifier).startWorkout();
             _controller.nextPage(
               duration: const Duration(milliseconds: 200),
-              curve: Curves.bounceIn,
+              curve: Curves.easeOutCubic,
             );
           },
         ),

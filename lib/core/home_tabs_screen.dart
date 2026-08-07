@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:wger/core/dashboard.dart';
@@ -41,6 +42,20 @@ class _HomeTabsScreenState extends ConsumerState<HomeTabsScreen>
   int _selectedIndex = 0;
   bool _isWideScreen = false;
 
+  /// Drives the quick cross-fade between tab destinations. The [IndexedStack]
+  /// below keeps every tab alive, so this only fades opacity in — no slide,
+  /// no cross-fade jank, no lost scroll position.
+  late final AnimationController _tabFade = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 200),
+    value: 1.0,
+  );
+
+  late final Animation<double> _tabFadeAnimation = CurvedAnimation(
+    parent: _tabFade,
+    curve: Curves.easeOutCubic,
+  );
+
   /// The tab bodies are built once and kept alive in an [IndexedStack] so
   /// switching tabs never loses scroll position, form input or loaded data:
   /// no dead ends, no jarring rebuilds.
@@ -60,10 +75,35 @@ class _HomeTabsScreenState extends ConsumerState<HomeTabsScreen>
     _isWideScreen = size.width > MATERIAL_XS_BREAKPOINT;
   }
 
+  @override
+  void dispose() {
+    _tabFade.dispose();
+    super.dispose();
+  }
+
   void _onItemTapped(int index) {
+    if (index == _selectedIndex) {
+      return;
+    }
     setState(() {
       _selectedIndex = index;
     });
+
+    // A fast, quiet fade into the new destination. Skipped entirely when the
+    // user has "remove animations" enabled.
+    if (MediaQuery.disableAnimationsOf(context)) {
+      _tabFade.value = 1.0;
+    } else {
+      _tabFade.forward(from: 0);
+    }
+
+    // Light tactile tick for tab changes. Best-effort: haptics are
+    // unavailable in tests and on some desktop platforms.
+    try {
+      HapticFeedback.selectionClick();
+    } catch (_) {
+      // Haptics are best-effort; swallow plugin failures.
+    }
   }
 
   @override
@@ -131,9 +171,12 @@ class _HomeTabsScreenState extends ConsumerState<HomeTabsScreen>
         children: [
           if (_isWideScreen) getNavigationRail(),
           Expanded(
-            child: IndexedStack(
-              index: _selectedIndex,
-              children: _screens,
+            child: FadeTransition(
+              opacity: _tabFadeAnimation,
+              child: IndexedStack(
+                index: _selectedIndex,
+                children: _screens,
+              ),
             ),
           ),
         ],
