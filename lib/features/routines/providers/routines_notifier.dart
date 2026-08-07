@@ -1,3 +1,4 @@
+
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
  * Copyright (c)  2026 wger Team
@@ -267,14 +268,20 @@ class RoutinesRiverpod extends _$RoutinesRiverpod {
 
     // Wait for every reference-data stream to produce its first value before
     // hydrating, so [_hydrateRoutine] doesn't silently skip steps just because
-    // a stream hasn't emitted yet.
-    await ref.awaitFirstValue(exercisesProvider);
-    await ref.awaitFirstValue(routineRepetitionUnitProvider);
-    await ref.awaitFirstValue(routineWeightUnitProvider);
-    await ref.awaitFirstValue(workoutSessionProvider);
-    await ref.awaitFirstValue(userProfileProvider);
+    // a stream hasn't emitted yet. Bounded: when the server is unreachable the
+    // reference-data streams may never emit, so never let this hang — the
+    // callers fall back to cached data or surface a real error.
+    await Future.wait([
+      ref.awaitFirstValue(exercisesProvider),
+      ref.awaitFirstValue(routineRepetitionUnitProvider),
+      ref.awaitFirstValue(routineWeightUnitProvider),
+      ref.awaitFirstValue(workoutSessionProvider),
+      ref.awaitFirstValue(userProfileProvider),
+    ]).timeout(const Duration(seconds: 10));
 
-    final routine = await repo.fetchAndSetRoutineFullServer(routineId);
+    final routine = await repo
+        .fetchAndSetRoutineFullServer(routineId)
+        .timeout(const Duration(seconds: 20));
     _hydrateRoutine(routine);
 
     // Inject the hydrated routine into the current state. Note: this is

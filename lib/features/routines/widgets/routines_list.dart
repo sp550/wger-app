@@ -1,3 +1,4 @@
+
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
  * Copyright (c) 2020 - 2026 wger Team
@@ -74,6 +75,24 @@ class _RoutinesListState extends ConsumerState<RoutinesList> {
                           });
                           try {
                             await routineProvider.fetchAndSetRoutineFull(routineId);
+                          } catch (_) {
+                            // Server unreachable or timed out: fall back to the
+                            // locally-cached routine when hydrated, otherwise
+                            // tell the user instead of spinning forever.
+                            if (mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    currentRoutine.isHydrated
+                                        ? 'Offline — showing saved data'
+                                        : 'Could not load routine — check your connection',
+                                  ),
+                                ),
+                              );
+                            }
+                            if (!currentRoutine.isHydrated) {
+                              return; // stay on the list; spinner cleared below
+                            }
                           } finally {
                             if (mounted) {
                               setState(() => _loadingRoutine = null);
