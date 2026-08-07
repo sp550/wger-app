@@ -79,7 +79,7 @@ class _RoutinesListState extends ConsumerState<RoutinesList> {
                             // Server unreachable or timed out: fall back to the
                             // locally-cached routine when hydrated, otherwise
                             // tell the user instead of spinning forever.
-                            if (mounted) {
+                            if (context.mounted) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text(
