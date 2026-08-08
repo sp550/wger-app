@@ -108,6 +108,9 @@ class WeightOverview extends riverpod.ConsumerWidget {
                 itemBuilder: (context, index) {
                   final currentEntry = entriesList[index];
                   return Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
                     child: ListTile(
                       title: Text(
                         '${numberFormat.format(currentEntry.weight)} ${weightUnit(profile.isMetric, context)}',

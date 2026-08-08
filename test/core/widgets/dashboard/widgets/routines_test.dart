@@ -24,6 +24,7 @@ import 'package:flutter_riverpod/misc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wger/core/network/network_provider.dart';
 import 'package:wger/core/widgets/dashboard/widgets/routines.dart';
+import 'package:wger/core/widgets/letter_badge.dart';
 import 'package:wger/features/routines/models/day.dart';
 import 'package:wger/features/routines/models/day_data.dart';
 import 'package:wger/features/routines/models/routine.dart';
@@ -149,5 +150,31 @@ void main() {
 
     expect(find.text('Rest day'), findsOneWidget);
     expect(find.byKey(const ValueKey('dashboard-start-workout')), findsNothing);
+  });
+
+  testWidgets('hero card shows the routine initial badge and a one-line plan preview',
+      (tester) async {
+    await tester.pumpWidget(renderWidget(routine: getTestRoutine()));
+    await tester.pumpAndSettle();
+
+    // Colored circular letter badge for the routine name.
+    expect(find.byType(LetterBadge), findsOneWidget);
+    expect(
+      find.descendant(of: find.byType(LetterBadge), matching: find.text('3')),
+      findsOneWidget,
+    );
+
+    // Routine name stays the headline, exactly once.
+    expect(find.text('3 day workout'), findsOneWidget);
+
+    // One-line exercise preview below the name.
+    expect(find.textContaining('Bench press'), findsOneWidget);
+
+    // The start CTA is still a full-width pill with the preserved key.
+    final start = tester.widget<FilledButton>(
+      find.byKey(const ValueKey('dashboard-start-workout')),
+    );
+    expect(start.onPressed, isNotNull);
+    expect(start.style?.shape?.resolve({}), isA<StadiumBorder>());
   });
 }

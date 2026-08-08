@@ -26,6 +26,7 @@ import 'package:wger/core/snackbar.dart';
 import 'package:wger/core/widgets/async_value_widget.dart';
 import 'package:wger/core/widgets/confirm_delete_dialog.dart';
 import 'package:wger/core/widgets/empty_state.dart';
+import 'package:wger/core/widgets/letter_badge.dart';
 import 'package:wger/features/routines/models/routine.dart';
 import 'package:wger/features/routines/providers/routines_notifier.dart';
 import 'package:wger/features/routines/screens/routine_screen.dart';
@@ -86,8 +87,12 @@ class _RoutinesListState extends ConsumerState<RoutinesList> {
             final canOpen = isOnline || currentRoutine.isHydrated;
 
             return Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
               child: ListTile(
                 enabled: canOpen,
+                leading: LetterBadge(text: currentRoutine.name, size: 44),
                 onTap: canOpen
                     ? () async {
                         if (isOnline) {

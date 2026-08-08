@@ -66,6 +66,9 @@ class _ReorderableDaysListState extends ConsumerState<ReorderableDaysList> {
 
             return Card(
               key: ValueKey(day),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
               child: ListTile(
                 //selected: day.id == widget.selectedDayId,
                 tileColor: isDaySelected ? Theme.of(context).highlightColor : null,
@@ -132,6 +135,9 @@ class _ReorderableDaysListState extends ConsumerState<ReorderableDaysList> {
           },
         ),
         Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
           child: ListTile(
             key: const ValueKey('add-day'),
             // tileColor: Theme.of(context).focusColor,

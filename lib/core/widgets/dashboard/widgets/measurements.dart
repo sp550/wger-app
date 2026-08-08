@@ -55,6 +55,9 @@ class _DashboardMeasurementWidgetState extends ConsumerState<DashboardMeasuremen
         }
 
         return Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [

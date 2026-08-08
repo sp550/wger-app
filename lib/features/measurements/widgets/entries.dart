@@ -90,6 +90,9 @@ class EntriesList extends ConsumerWidget {
               final currentEntry = _category.entries[index];
 
               return Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
                 child: ListTile(
                   title: Text('${numberFormat.format(currentEntry.value)} ${_category.unit}'),
                   subtitle: Text(datetimeFormat.format(currentEntry.date)),

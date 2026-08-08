@@ -167,6 +167,9 @@ class _DashboardCalendarWidgetState extends riverpod.ConsumerState<DashboardCale
 
   Widget _shell(BuildContext context, Widget body) {
     return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
       child: Column(
         children: [
           ListTile(

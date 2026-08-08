@@ -18,8 +18,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:wger/core/widgets/letter_badge.dart';
 import 'package:wger/features/exercises/models/exercise.dart';
-import 'package:wger/features/exercises/widgets/images.dart';
 import 'package:wger/features/routines/models/day.dart';
 import 'package:wger/features/routines/providers/gym_state.dart';
 import 'package:wger/features/routines/providers/gym_state_notifier.dart';
@@ -258,18 +258,14 @@ class StartPage extends ConsumerWidget {
                   .entries
                   .map((entry) {
                     final exercise = entry.key;
+                    final name = exercise
+                        .getTranslation(Localizations.localeOf(context).languageCode)
+                        .name;
                     return Column(
                       children: [
                         ListTile(
-                          leading: SizedBox(
-                            width: 45,
-                            child: ExerciseImageWidget(image: exercise.getMainImage),
-                          ),
-                          title: Text(
-                            exercise
-                                .getTranslation(Localizations.localeOf(context).languageCode)
-                                .name,
-                          ),
+                          leading: LetterBadge(text: name, size: 45),
+                          title: Text(name),
                           subtitle: Text(entry.value.toList().join('\n')),
                         ),
                       ],
@@ -280,6 +276,11 @@ class StartPage extends ConsumerWidget {
         ),
         const GymModeOptions(),
         FilledButton(
+          // Full-pill primary CTA (Progression parity).
+          style: FilledButton.styleFrom(
+            minimumSize: const Size.fromHeight(56),
+            shape: const StadiumBorder(),
+          ),
           child: Text(AppLocalizations.of(context).start),
           onPressed: () {
             ref.read(gymStateProvider.notifier).startWorkout();

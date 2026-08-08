@@ -40,6 +40,9 @@ class CategoriesCard extends StatelessWidget {
 
     return Card(
       elevation: elevation,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
       child: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Column(

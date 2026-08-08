@@ -188,6 +188,11 @@ class WorkoutSessionStats extends ConsumerWidget {
         const SizedBox(height: 8),
         ExercisesCard(_session, _userPrTrophies),
         FilledButton(
+          // Full-pill primary CTA (Progression parity).
+          style: FilledButton.styleFrom(
+            minimumSize: const Size.fromHeight(56),
+            shape: const StadiumBorder(),
+          ),
           onPressed: () {
             ref.read(gymStateProvider.notifier).clear();
             Navigator.of(context).pop();
