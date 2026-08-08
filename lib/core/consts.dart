@@ -108,7 +108,7 @@ const DEFAULT_ANIMATION_DURATION = Duration(milliseconds: 200);
 /// Standard M3 easing for in-app page turns (gym-mode swipe, menu jumps):
 /// fast and quiet, nothing bouncy. Used wherever a PageView/controller
 /// animates between pages.
-const DEFAULT_ANIMATION_CURVE = Curves.easeOutCubic;
+const DEFAULT_ANIMATION_CURVE = Curves.bounceIn;
 
 /// Dateformat used when using a date as a key in a dictionary. Using either the
 /// regular date object or date.toLocal() can cause problems, depending on the
