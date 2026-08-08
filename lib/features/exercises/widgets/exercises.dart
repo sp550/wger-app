@@ -81,7 +81,7 @@ class MuscleColorHelper extends StatelessWidget {
           main
               ? AppLocalizations.of(context).muscles
               : AppLocalizations.of(context).musclesSecondary,
-          style: const TextStyle(fontWeight: FontWeight.bold),
+          style: Theme.of(context).textTheme.titleSmall,
         ),
       ],
     );
@@ -176,6 +176,7 @@ class _CarouselImagesState extends State<CarouselImages> {
 
   @override
   Widget build(BuildContext context) {
+    final onSurface = Theme.of(context).colorScheme.onSurface;
     return SizedBox(
       height: 250,
       child: Stack(
@@ -206,7 +207,9 @@ class _CarouselImagesState extends State<CarouselImages> {
                 height: 8,
                 width: 8,
                 decoration: BoxDecoration(
-                  color: pageIndex == index ? Colors.black : Colors.black26,
+                  color: pageIndex == index
+                      ? onSurface
+                      : onSurface.withValues(alpha: 0.26),
                   shape: BoxShape.circle,
                 ),
               ),

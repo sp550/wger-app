@@ -28,6 +28,8 @@ class _AddExerciseMultiselectButtonState<T> extends State<AddExerciseMultiselect
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final hasSelection = _selectedItems.isNotEmpty;
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: MultiSelectDialogField(
@@ -56,16 +58,16 @@ class _AddExerciseMultiselectButtonState<T> extends State<AddExerciseMultiselect
         buttonText: Text(
           widget.title,
           style: TextStyle(
-            color: _selectedItems.isEmpty ? Colors.grey[700] : Colors.grey,
+            color: hasSelection ? scheme.onSurface : scheme.onSurfaceVariant,
           ),
         ),
         buttonIcon: Icon(
           Icons.arrow_drop_down,
-          color: _selectedItems.isEmpty ? Colors.grey[700] : Colors.grey,
+          color: hasSelection ? scheme.onSurface : scheme.onSurfaceVariant,
         ),
         decoration: BoxDecoration(
           border: Border.all(
-            color: _selectedItems.isEmpty ? Colors.grey : Colors.transparent,
+            color: hasSelection ? Colors.transparent : scheme.outline,
           ),
           borderRadius: const BorderRadius.all(Radius.circular(10)),
         ),
