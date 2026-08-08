@@ -103,7 +103,7 @@ void main() {
         child: const MaterialApp(
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
-          home: const Scaffold(
+          home: Scaffold(
             body: Padding(
               padding: EdgeInsets.all(16),
               child: WeightInputWidget(value: 100, onChanged: _noopWeightChange),
