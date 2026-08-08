@@ -137,15 +137,38 @@ void main() {
       expect(find.byType(AlertDialog), findsNothing);
     });
 
-    testWidgets('quick plus button steps by the configured step', (tester) async {
+    testWidgets('chevron up button steps by the configured step', (tester) async {
       final changes = <num?>[];
       await pumpField(tester, harness: _FieldHarness(initialValue: 0, step: 0.5, changes: changes));
 
-      await tester.tap(find.byIcon(Icons.add));
+      await tester.tap(find.byIcon(Icons.keyboard_arrow_up));
       await tester.pumpAndSettle();
 
       expect(changes, [0.5]);
       expect(find.text('0.5'), findsOneWidget);
+    });
+
+    testWidgets('chevron down button steps down by the configured step', (tester) async {
+      final changes = <num?>[];
+      await pumpField(tester, harness: _FieldHarness(initialValue: 2, step: 0.5, changes: changes));
+
+      await tester.tap(find.byIcon(Icons.keyboard_arrow_down));
+      await tester.pumpAndSettle();
+
+      expect(changes, [1.5]);
+      expect(find.text('1.5'), findsOneWidget);
+    });
+
+    testWidgets('chevron steps never go below zero', (tester) async {
+      final changes = <num?>[];
+      await pumpField(tester, harness: _FieldHarness(initialValue: 0, step: 1, changes: changes));
+
+      // A downward step at the minimum clamps at 0 and reports no change.
+      await tester.tap(find.byIcon(Icons.keyboard_arrow_down));
+      await tester.pumpAndSettle();
+
+      expect(changes, isEmpty);
+      expect(find.text('0'), findsOneWidget);
     });
 
     testWidgets('value never steps below zero', (tester) async {

@@ -491,9 +491,42 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          // Progression-style bottom panel: Weight and Repetitions sit side by
+          // side, each a slide-adjust field with up/down chevron steppers on
+          // its right edge (drag to scrub and tap-to-type still work on the
+          // value itself).
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Expanded(
+                child: SlideAdjustNumberField(
+                  key: const ValueKey('logs-weight-widget'),
+                  value: log.weight,
+                  step: widget.configData.weightRounding ?? 0.5,
+                  decimals: 2,
+                  label: i18n.weight,
+                  unitLabel: log.weightUnitObj != null
+                      ? getServerStringTranslation(log.weightUnitObj!.name, context)
+                      : null,
+                  unitSelector: _buildUnitSelector(
+                    tooltip: i18n.weightUnit,
+                    units: ref.watch(routineWeightUnitProvider).asData?.value ??
+                        const <WeightUnit>[],
+                    label: (u) => getServerStringTranslation(u.name, context),
+                    onSelected: (v) {
+                      ref.read(gymLogProvider.notifier).setWeightUnit(v);
+                    },
+                  ),
+                  onChanged: (v) {
+                    _userTouched = true;
+                    if (v != null) {
+                      ref.read(gymLogProvider.notifier).setWeight(v);
+                      ref.read(plateCalculatorProvider.notifier).setWeight(v);
+                    }
+                  },
+                ),
+              ),
+              const SizedBox(width: 12),
               Expanded(
                 child: SlideAdjustNumberField(
                   key: const ValueKey('logs-reps-widget'),
@@ -521,35 +554,6 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
                     _userTouched = true;
                     if (v != null) {
                       ref.read(gymLogProvider.notifier).setRepetitions(v);
-                    }
-                  },
-                ),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: SlideAdjustNumberField(
-                  key: const ValueKey('logs-weight-widget'),
-                  value: log.weight,
-                  step: widget.configData.weightRounding ?? 0.5,
-                  decimals: 2,
-                  label: i18n.weight,
-                  unitLabel: log.weightUnitObj != null
-                      ? getServerStringTranslation(log.weightUnitObj!.name, context)
-                      : null,
-                  unitSelector: _buildUnitSelector(
-                    tooltip: i18n.weightUnit,
-                    units: ref.watch(routineWeightUnitProvider).asData?.value ??
-                        const <WeightUnit>[],
-                    label: (u) => getServerStringTranslation(u.name, context),
-                    onSelected: (v) {
-                      ref.read(gymLogProvider.notifier).setWeightUnit(v);
-                    },
-                  ),
-                  onChanged: (v) {
-                    _userTouched = true;
-                    if (v != null) {
-                      ref.read(gymLogProvider.notifier).setWeight(v);
-                      ref.read(plateCalculatorProvider.notifier).setWeight(v);
                     }
                   },
                 ),

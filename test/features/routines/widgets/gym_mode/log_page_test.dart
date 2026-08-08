@@ -225,12 +225,13 @@ void main() {
       await pumpLogPage(tester);
 
       // Precise input happens through the manual-entry dialog: open it from
-      // each field's keyboard button and confirm the typed values.
+      // the field's value surface (the tap-to-type fallback) and confirm the
+      // typed values.
       Future<void> enterViaDialog(Key fieldKey, String value) async {
         await tester.tap(
           find.descendant(
             of: find.byKey(fieldKey),
-            matching: find.byIcon(Icons.keyboard_alt_outlined),
+            matching: find.byKey(const ValueKey('slide-adjust-scrub')),
           ),
         );
         await tester.pumpAndSettle();
@@ -262,10 +263,10 @@ void main() {
       expect(saved.iteration, gymState.iteration);
     });
 
-    testWidgets('reps quick buttons increment and decrement the value', (tester) async {
+    testWidgets('reps chevron steppers increment and decrement the value', (tester) async {
       // No previous logs: the form keeps the routine template values (reps = 0),
-      // so the +/- buttons are exercised from a known baseline instead of the
-      // auto-filled previous-session values.
+      // so the chevron steppers are exercised from a known baseline instead of
+      // the auto-filled previous-session values.
       when(
         mockWorkoutLogRepo.watchLogsByExerciseDrift(
           routineId: anyNamed('routineId'),
@@ -280,23 +281,29 @@ void main() {
 
       final repsWidget = find.byKey(const ValueKey('logs-reps-widget'));
       expect(repsWidget, findsOneWidget);
-      final addBtn = find.descendant(of: repsWidget, matching: find.byIcon(Icons.add));
-      final removeBtn = find.descendant(of: repsWidget, matching: find.byIcon(Icons.remove));
+      final stepUpBtn = find.descendant(
+        of: repsWidget,
+        matching: find.byIcon(Icons.keyboard_arrow_up),
+      );
+      final stepDownBtn = find.descendant(
+        of: repsWidget,
+        matching: find.byIcon(Icons.keyboard_arrow_down),
+      );
 
-      await tester.tap(addBtn);
+      await tester.tap(stepUpBtn);
       await tester.pumpAndSettle();
       expect(find.descendant(of: repsWidget, matching: find.text('1')), findsOneWidget);
 
-      await tester.tap(addBtn);
+      await tester.tap(stepUpBtn);
       await tester.pumpAndSettle();
       expect(find.descendant(of: repsWidget, matching: find.text('2')), findsOneWidget);
 
-      await tester.tap(removeBtn);
+      await tester.tap(stepDownBtn);
       await tester.pumpAndSettle();
       expect(find.descendant(of: repsWidget, matching: find.text('1')), findsOneWidget);
     });
 
-    testWidgets('weight quick buttons increment and decrement the value', (tester) async {
+    testWidgets('weight chevron steppers increment and decrement the value', (tester) async {
       // See the reps test above: an empty past-log stream keeps the template
       // baseline (weight = 0) so the step behaviour stays deterministic.
       when(
@@ -313,20 +320,26 @@ void main() {
 
       final weightWidget = find.byKey(const ValueKey('logs-weight-widget'));
       expect(weightWidget, findsOneWidget);
-      final addBtn = find.descendant(of: weightWidget, matching: find.byIcon(Icons.add));
-      final removeBtn = find.descendant(of: weightWidget, matching: find.byIcon(Icons.remove));
+      final stepUpBtn = find.descendant(
+        of: weightWidget,
+        matching: find.byIcon(Icons.keyboard_arrow_up),
+      );
+      final stepDownBtn = find.descendant(
+        of: weightWidget,
+        matching: find.byIcon(Icons.keyboard_arrow_down),
+      );
 
       // No per-exercise rounding is configured for this fixture, so the
       // slide-adjust field falls back to the default 0.5 kg step.
-      await tester.tap(addBtn);
+      await tester.tap(stepUpBtn);
       await tester.pumpAndSettle();
       expect(find.descendant(of: weightWidget, matching: find.text('0.5')), findsOneWidget);
 
-      await tester.tap(addBtn);
+      await tester.tap(stepUpBtn);
       await tester.pumpAndSettle();
       expect(find.descendant(of: weightWidget, matching: find.text('1')), findsOneWidget);
 
-      await tester.tap(removeBtn);
+      await tester.tap(stepDownBtn);
       await tester.pumpAndSettle();
       expect(find.descendant(of: weightWidget, matching: find.text('0.5')), findsOneWidget);
     });

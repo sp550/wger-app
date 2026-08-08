@@ -40,13 +40,15 @@ const Object _clearedValue = Object();
 ///    value in [step] increments, dragging down decreases it. Every step
 ///    triggers a selection haptic and the value is committed through
 ///    [onChanged] when the gesture is released, or
-///  * tapping the number or the keyboard button, which opens a precise manual
-///    numeric entry dialog (the previous keyboard-only input remains as a
-///    fallback).
+///  * tapping the number, which opens a precise manual numeric entry dialog
+///    (the keyboard input remains as a fallback), or
+///  * tapping the chevron steppers on the right edge of the field (up/down
+///    arrows), which apply a single [step] immediately.
 ///
-/// Optional quick +/- buttons use the same [step]. The drag surface is at
-/// least 56dp tall (>= the 48dp comfortable touch-target guideline) and the
-/// widget uses theme colors, so it fits the app's dark-first design.
+/// The chevron steppers are the Progression-style quick controls for weight,
+/// reps and any other numeric set input. The drag surface is at least 56dp
+/// tall (>= the 48dp comfortable touch-target guideline) and the widget uses
+/// theme colors, so it fits the app's dark-first design.
 class SlideAdjustNumberField extends StatefulWidget {
   /// Current value, `null` renders a muted placeholder.
   final num? value;
@@ -188,7 +190,7 @@ class _SlideAdjustNumberFieldState extends State<SlideAdjustNumberField> {
     _dragAccumulator = 0;
   }
 
-  /// Applies one [-1|+1] step from the committed value (quick buttons).
+  /// Applies one [-1|+1] step from the committed value (chevron steppers).
   void _stepBy(int direction) {
     final base = widget.value?.toDouble() ?? 0;
     final next = _quantize(_clamp(base + direction * widget.step.toDouble()));
@@ -235,90 +237,93 @@ class _SlideAdjustNumberFieldState extends State<SlideAdjustNumberField> {
         border: Border.all(color: theme.colorScheme.outlineVariant, width: 1),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  widget.label.toUpperCase(),
-                  style: theme.textTheme.labelSmall?.copyWith(
-                    color: theme.colorScheme.onSurfaceVariant,
-                    letterSpacing: 0.8,
-                    fontWeight: FontWeight.w600,
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-              if (widget.unitSelector != null) widget.unitSelector!,
-            ],
-          ),
-          const SizedBox(height: 4),
-          // Big value: the whole surface is the tap + vertical-scrub target.
-          Semantics(
-            label: widget.label,
-            value: valueText,
-            child: GestureDetector(
-              key: const ValueKey('slide-adjust-scrub'),
-              behavior: HitTestBehavior.opaque,
-              onTap: _openManualEntry,
-              onVerticalDragStart: _onDragStart,
-              onVerticalDragUpdate: _onDragUpdate,
-              onVerticalDragEnd: _onDragEnd,
-              onVerticalDragCancel: _onDragCancel,
-              child: Container(
-                height: 56,
-                alignment: Alignment.center,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.baseline,
-                  textBaseline: TextBaseline.alphabetic,
+          Expanded(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
                   children: [
-                    Flexible(
+                    Expanded(
                       child: Text(
-                        valueText,
-                        maxLines: 1,
-                        style: theme.textTheme.headlineLarge?.copyWith(
-                          color: isPlaceholder
-                              ? theme.colorScheme.onSurfaceVariant
-                              : theme.colorScheme.onSurface,
-                          fontWeight: FontWeight.w800,
+                        widget.label.toUpperCase(),
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                          letterSpacing: 0.8,
+                          fontWeight: FontWeight.w600,
                         ),
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    if (widget.unitLabel != null) ...[
-                      const SizedBox(width: 6),
-                      Text(
-                        widget.unitLabel!,
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          color: theme.colorScheme.onSurfaceVariant,
-                        ),
-                      ),
-                    ],
+                    if (widget.unitSelector != null) widget.unitSelector!,
                   ],
                 ),
-              ),
+                const SizedBox(height: 4),
+                // Big value: the whole surface is the tap + vertical-scrub target.
+                Semantics(
+                  label: widget.label,
+                  value: valueText,
+                  child: GestureDetector(
+                    key: const ValueKey('slide-adjust-scrub'),
+                    behavior: HitTestBehavior.opaque,
+                    onTap: _openManualEntry,
+                    onVerticalDragStart: _onDragStart,
+                    onVerticalDragUpdate: _onDragUpdate,
+                    onVerticalDragEnd: _onDragEnd,
+                    onVerticalDragCancel: _onDragCancel,
+                    child: Container(
+                      height: 56,
+                      alignment: Alignment.center,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.baseline,
+                        textBaseline: TextBaseline.alphabetic,
+                        children: [
+                          Flexible(
+                            child: Text(
+                              valueText,
+                              maxLines: 1,
+                              style: theme.textTheme.headlineLarge?.copyWith(
+                                color: isPlaceholder
+                                    ? theme.colorScheme.onSurfaceVariant
+                                    : theme.colorScheme.onSurface,
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
+                          ),
+                          if (widget.unitLabel != null) ...[
+                            const SizedBox(width: 6),
+                            Text(
+                              widget.unitLabel!,
+                              style: theme.textTheme.titleMedium?.copyWith(
+                                color: theme.colorScheme.onSurfaceVariant,
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
-          // Quick controls: step down, manual entry, step up.
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+          // Progression-style steppers: up/down chevrons on the right edge of
+          // the field, each applying a single [step] on tap.
+          Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              _ControlButton(
-                icon: Icons.remove,
-                tooltip: i18n.decrease,
-                onTap: () => _stepBy(-1),
-              ),
-              _ControlButton(
-                icon: Icons.keyboard_alt_outlined,
-                tooltip: i18n.enterValue,
-                onTap: _openManualEntry,
-              ),
-              _ControlButton(
-                icon: Icons.add,
+              _ChevronButton(
+                icon: Icons.keyboard_arrow_up,
                 tooltip: i18n.increase,
                 onTap: () => _stepBy(1),
+              ),
+              _ChevronButton(
+                icon: Icons.keyboard_arrow_down,
+                tooltip: i18n.decrease,
+                onTap: () => _stepBy(-1),
               ),
             ],
           ),
@@ -328,18 +333,19 @@ class _SlideAdjustNumberFieldState extends State<SlideAdjustNumberField> {
   }
 }
 
-/// Compact round button used for the quick controls under the value.
-class _ControlButton extends StatelessWidget {
+/// Compact chevron button for the Progression-style steppers on the right
+/// edge of [SlideAdjustNumberField]. Keeps a 44dp minimum tap target.
+class _ChevronButton extends StatelessWidget {
   final IconData icon;
   final String tooltip;
   final VoidCallback onTap;
 
-  const _ControlButton({required this.icon, required this.tooltip, required this.onTap});
+  const _ChevronButton({required this.icon, required this.tooltip, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      icon: Icon(icon, size: 20),
+      icon: Icon(icon, size: 24),
       tooltip: tooltip,
       visualDensity: VisualDensity.compact,
       padding: EdgeInsets.zero,
