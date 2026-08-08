@@ -19,6 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:intl/intl.dart';
+import 'package:wger/core/widgets/empty_state.dart';
 import 'package:wger/features/nutrition/models/nutritional_plan.dart';
 import 'package:wger/features/nutrition/widgets/charts.dart';
 import 'package:wger/features/nutrition/widgets/macro_nutrients_table.dart';
@@ -79,6 +80,11 @@ class NutritionalPlanDetailWidget extends riverpod.ConsumerWidget {
             ),
           ),
           const SizedBox(height: 10),
+          if (_nutritionalPlan.meals.isEmpty && !_nutritionalPlan.onlyLogging)
+            EmptyState(
+              icon: Icons.restaurant_menu,
+              title: i18n.yourCurrentNutritionPlanHasNoMealsDefinedYet,
+            ),
           ..._nutritionalPlan.meals.map(
             (meal) => MealWidget(
               meal,

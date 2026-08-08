@@ -18,9 +18,13 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:wger/core/form_screen.dart';
 import 'package:wger/core/widgets/async_value_widget.dart';
+import 'package:wger/core/widgets/empty_state.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/providers/measurement_notifier.dart';
+import 'package:wger/features/measurements/widgets/forms.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 
 import 'categories_card.dart';
 
@@ -31,11 +35,32 @@ class CategoriesList extends ConsumerWidget {
     return AsyncValueWidget<List<MeasurementCategory>>(
       value: ref.watch(measurementProvider),
       loggerName: 'CategoriesList',
-      data: (categoriesList) => ListView.builder(
-        padding: const EdgeInsets.all(10.0),
-        itemCount: categoriesList.length,
-        itemBuilder: (context, index) => CategoriesCard(categoriesList[index]),
-      ),
+      data: (categoriesList) {
+        if (categoriesList.isEmpty) {
+          final i18n = AppLocalizations.of(context);
+          return EmptyState(
+            icon: Icons.straighten,
+            title: i18n.noMeasurements,
+            subtitle: i18n.emptyStateAddMeasurement,
+            actionLabel: i18n.newEntry,
+            onAction: () {
+              Navigator.pushNamed(
+                context,
+                FormScreen.routeName,
+                arguments: FormScreenArguments(
+                  i18n.newEntry,
+                  const MeasurementCategoryForm(),
+                ),
+              );
+            },
+          );
+        }
+        return ListView.builder(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+          itemCount: categoriesList.length,
+          itemBuilder: (context, index) => CategoriesCard(categoriesList[index]),
+        );
+      },
     );
   }
 }

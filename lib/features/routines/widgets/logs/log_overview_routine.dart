@@ -21,6 +21,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:wger/core/consts.dart';
+import 'package:wger/core/widgets/empty_state.dart';
 import 'package:wger/features/routines/models/routine.dart';
 import 'package:wger/features/routines/widgets/logs/day_logs_container.dart';
 import 'package:wger/features/trophies/providers/trophy_notifier.dart';
@@ -45,10 +46,17 @@ class WorkoutLogs extends ConsumerWidget {
           AppLocalizations.of(context).labelWorkoutLogs,
           style: Theme.of(context).textTheme.headlineSmall,
         ),
-        SizedBox(
-          width: double.infinity,
-          child: WorkoutLogCalendar(_routine),
-        ),
+        if (_routine.sessions.isEmpty)
+          EmptyState(
+            icon: Icons.event_note,
+            title: AppLocalizations.of(context).noWorkoutLogs,
+            subtitle: AppLocalizations.of(context).emptyStateLogWorkout,
+          )
+        else
+          SizedBox(
+            width: double.infinity,
+            child: WorkoutLogCalendar(_routine),
+          ),
       ],
     );
   }

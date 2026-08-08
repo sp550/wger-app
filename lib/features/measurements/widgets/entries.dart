@@ -21,6 +21,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/core/form_screen.dart';
 import 'package:wger/core/formatting/formatting.dart';
 import 'package:wger/core/snackbar.dart';
+import 'package:wger/core/widgets/empty_state.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/providers/measurement_notifier.dart';
 import 'package:wger/features/measurements/widgets/charts.dart';
@@ -47,6 +48,28 @@ class EntriesList extends ConsumerWidget {
     final entries7dAvg = moving7dAverage(entriesAll);
 
     final datetimeFormat = localizedDate(context);
+
+    // A category with no entries yet: show an intentional empty state with a
+    // direct "new entry" action instead of a blank chart + empty list.
+    if (_category.entries.isEmpty) {
+      final i18n = AppLocalizations.of(context);
+      return EmptyState(
+        icon: Icons.straighten,
+        title: i18n.noMeasurements,
+        subtitle: i18n.emptyStateAddMeasurementEntry,
+        actionLabel: i18n.newEntry,
+        onAction: () {
+          Navigator.pushNamed(
+            context,
+            FormScreen.routeName,
+            arguments: FormScreenArguments(
+              i18n.newEntry,
+              MeasurementEntryForm(_category.id!),
+            ),
+          );
+        },
+      );
+    }
 
     return Column(
       children: [

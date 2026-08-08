@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/core/wide_screen_wrapper.dart';
 import 'package:wger/core/widgets/app_bar.dart';
+import 'package:wger/core/widgets/empty_state.dart';
 import 'package:wger/core/widgets/progress_indicator.dart';
 import 'package:wger/features/exercises/models/exercise.dart';
 import 'package:wger/features/exercises/providers/exercise_filters_notifier.dart';
@@ -45,6 +46,14 @@ class _ExercisesList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (exerciseList.isEmpty) {
+      final i18n = AppLocalizations.of(context);
+      return EmptyState(
+        icon: Icons.search_off,
+        title: i18n.noMatchingExerciseFound,
+        subtitle: i18n.emptyStateFilterSubtitle,
+      );
+    }
     return ListView.separated(
       separatorBuilder: (context, index) {
         return const Divider(thickness: 1);

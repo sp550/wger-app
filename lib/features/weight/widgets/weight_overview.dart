@@ -22,6 +22,7 @@ import 'package:wger/core/form_screen.dart';
 import 'package:wger/core/formatting/formatting.dart';
 import 'package:wger/core/snackbar.dart';
 import 'package:wger/core/widgets/async_value_widget.dart';
+import 'package:wger/core/widgets/empty_state.dart';
 import 'package:wger/core/widgets/progress_indicator.dart';
 import 'package:wger/features/account/providers/user_profile_notifier.dart';
 import 'package:wger/features/measurements/widgets/charts.dart';
@@ -50,6 +51,25 @@ class WeightOverview extends riverpod.ConsumerWidget {
         final profile = profileAsync.value;
         if (profile == null) {
           return const BoxedProgressIndicator();
+        }
+
+        // Empty history: an intentional, actionable empty state instead of a
+        // blank chart + empty list.
+        if (entriesList.isEmpty) {
+          final i18n = AppLocalizations.of(context);
+          return EmptyState(
+            icon: Icons.monitor_weight_outlined,
+            title: i18n.noWeightEntries,
+            subtitle: i18n.emptyStateLogWeight,
+            actionLabel: i18n.newEntry,
+            onAction: () {
+              Navigator.pushNamed(
+                context,
+                FormScreen.routeName,
+                arguments: FormScreenArguments(i18n.newEntry, WeightForm()),
+              );
+            },
+          );
         }
 
         final entriesAll = entriesList.map((e) => MeasurementChartEntry(e.weight, e.date)).toList();

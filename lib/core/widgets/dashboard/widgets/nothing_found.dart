@@ -18,7 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:wger/core/form_screen.dart';
-import 'package:wger/theme/theme.dart';
+import 'package:wger/core/widgets/empty_state.dart';
 
 class NothingFound extends StatelessWidget {
   final String _title;
@@ -29,31 +29,23 @@ class NothingFound extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 150,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(_title),
-          if (_titleForm != null && _form != null)
-            IconButton(
-              iconSize: 30,
-              tooltip: _titleForm,
-              icon: const Icon(Icons.add_box, color: wgerPrimaryButtonColor),
-              onPressed: () {
-                Navigator.pushNamed(
-                  context,
-                  FormScreen.routeName,
-                  arguments: FormScreenArguments(
-                    _titleForm,
-                    hasListView: true,
-                    _form,
-                  ),
-                );
-              },
-            ),
-        ],
-      ),
+    return EmptyState(
+      icon: Icons.add_box_outlined,
+      title: _title,
+      actionLabel: _titleForm,
+      onAction: _titleForm != null && _form != null
+          ? () {
+              Navigator.pushNamed(
+                context,
+                FormScreen.routeName,
+                arguments: FormScreenArguments(
+                  _titleForm,
+                  hasListView: true,
+                  _form,
+                ),
+              );
+            }
+          : null,
     );
   }
 }

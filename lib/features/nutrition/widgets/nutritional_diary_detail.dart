@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:wger/core/widgets/empty_state.dart';
 import 'package:wger/features/nutrition/models/nutritional_plan.dart';
 import 'package:wger/features/nutrition/models/nutritional_values.dart';
 import 'package:wger/features/nutrition/widgets/charts.dart';
@@ -36,7 +37,12 @@ class NutritionalDiaryDetailWidget extends StatelessWidget {
     final logs = _nutritionalPlan.getLogsForDate(_date);
 
     if (valuesLogged == null) {
-      return const Text('');
+      // Nothing was logged for this date: an intentional empty state instead
+      // of a blank screen.
+      return EmptyState(
+        icon: Icons.fastfood_outlined,
+        title: AppLocalizations.of(context).nothingLoggedOnThisDay,
+      );
     }
 
     return Column(
