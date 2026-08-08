@@ -21,6 +21,7 @@ import 'package:logging/logging.dart';
 import 'package:wger/core/errors.dart' show buildGithubIssueUrl;
 import 'package:wger/core/logs.dart';
 import 'package:wger/core/misc.dart';
+import 'package:wger/core/widgets/empty_state.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/powersync/sync_diagnostics.dart' show collectSyncDiagnostics;
 
@@ -56,7 +57,10 @@ class LogOverviewPage extends StatelessWidget {
         ],
       ),
       body: logs.isEmpty
-          ? const Center(child: Text('No logs available.'))
+          ? EmptyState(
+              icon: Icons.article_outlined,
+              title: i18n.noLogs,
+            )
           : ListView.builder(
               itemCount: logs.length,
               itemBuilder: (context, index) {

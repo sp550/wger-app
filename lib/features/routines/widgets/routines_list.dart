@@ -19,13 +19,17 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:wger/core/form_screen.dart';
 import 'package:wger/core/formatting/formatting.dart';
 import 'package:wger/core/network/network_provider.dart';
+import 'package:wger/core/snackbar.dart';
 import 'package:wger/core/widgets/async_value_widget.dart';
 import 'package:wger/core/widgets/confirm_delete_dialog.dart';
-import 'package:wger/core/widgets/text_prompt.dart';
+import 'package:wger/core/widgets/empty_state.dart';
+import 'package:wger/features/routines/models/routine.dart';
 import 'package:wger/features/routines/providers/routines_notifier.dart';
 import 'package:wger/features/routines/screens/routine_screen.dart';
+import 'package:wger/features/routines/widgets/forms/routine.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 class RoutinesList extends ConsumerStatefulWidget {
@@ -51,7 +55,24 @@ class _RoutinesListState extends ConsumerState<RoutinesList> {
       data: (state) {
         final routines = state.routines;
         if (routines.isEmpty) {
-          return const TextPrompt();
+          final i18n = AppLocalizations.of(context);
+          return EmptyState(
+            icon: Icons.fitness_center,
+            title: i18n.noRoutines,
+            subtitle: i18n.emptyStateCreateRoutine,
+            actionLabel: i18n.newRoutine,
+            onAction: () {
+              Navigator.pushNamed(
+                context,
+                FormScreen.routeName,
+                arguments: FormScreenArguments(
+                  i18n.newRoutine,
+                  RoutineForm(Routine.empty(), useListView: true),
+                  hasListView: true,
+                ),
+              );
+            },
+          );
         }
         return ListView.builder(
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
@@ -80,14 +101,11 @@ class _RoutinesListState extends ConsumerState<RoutinesList> {
                             // locally-cached routine when hydrated, otherwise
                             // tell the user instead of spinning forever.
                             if (context.mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    currentRoutine.isHydrated
-                                        ? 'Offline — showing saved data'
-                                        : 'Could not load routine — check your connection',
-                                  ),
-                                ),
+                              showSnackbar(
+                                context,
+                                currentRoutine.isHydrated
+                                    ? 'Offline — showing saved data'
+                                    : 'Could not load routine — check your connection',
                               );
                             }
                             if (!currentRoutine.isHydrated) {

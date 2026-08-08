@@ -21,8 +21,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:wger/core/form_screen.dart';
 import 'package:wger/core/formatting/formatting.dart';
+import 'package:wger/core/network/network_provider.dart';
 import 'package:wger/core/platform.dart';
-import 'package:wger/core/widgets/text_prompt.dart';
+import 'package:wger/core/widgets/empty_state.dart';
 import 'package:wger/core/widgets/wger_image.dart';
 import 'package:wger/features/gallery/models/image.dart';
 import 'package:wger/features/gallery/providers/gallery_notifier.dart';
@@ -36,11 +37,31 @@ class Gallery extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final images = ref.watch(galleryProvider).value ?? const [];
+    final isOnline = ref.watch(networkStatusProvider);
+    final i18n = AppLocalizations.of(context);
 
     return Padding(
       padding: const EdgeInsets.all(5),
       child: images.isEmpty
-          ? const TextPrompt()
+          ? EmptyState(
+              icon: Icons.photo_library_outlined,
+              title: i18n.noImages,
+              subtitle: i18n.emptyStateAddImage,
+              actionLabel: i18n.addImage,
+              onAction: isOnline
+                  ? () {
+                      Navigator.pushNamed(
+                        context,
+                        FormScreen.routeName,
+                        arguments: FormScreenArguments(
+                          i18n.addImage,
+                          ImageForm(),
+                          hasListView: true,
+                        ),
+                      );
+                    }
+                  : null,
+            )
           : MasonryGridView.count(
               crossAxisCount: 2,
               mainAxisSpacing: 5,

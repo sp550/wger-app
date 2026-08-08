@@ -4964,4 +4964,159 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             ),
           )
           as String);
+
+  @override
+  String get noImages =>
+      (super.noSuchMethod(
+            Invocation.getter(#noImages),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#noImages),
+            ),
+          )
+          as String);
+
+  @override
+  String get noIngredientsFound =>
+      (super.noSuchMethod(
+            Invocation.getter(#noIngredientsFound),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#noIngredientsFound),
+            ),
+          )
+          as String);
+
+  @override
+  String get noLogs =>
+      (super.noSuchMethod(
+            Invocation.getter(#noLogs),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#noLogs),
+            ),
+          )
+          as String);
+
+  @override
+  String get noMeasurements =>
+      (super.noSuchMethod(
+            Invocation.getter(#noMeasurements),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#noMeasurements),
+            ),
+          )
+          as String);
+
+  @override
+  String get noWorkoutLogs =>
+      (super.noSuchMethod(
+            Invocation.getter(#noWorkoutLogs),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#noWorkoutLogs),
+            ),
+          )
+          as String);
+
+  @override
+  String get nothingLoggedOnThisDay =>
+      (super.noSuchMethod(
+            Invocation.getter(#nothingLoggedOnThisDay),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#nothingLoggedOnThisDay),
+            ),
+          )
+          as String);
+
+  @override
+  String get emptyStateAddImage =>
+      (super.noSuchMethod(
+            Invocation.getter(#emptyStateAddImage),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#emptyStateAddImage),
+            ),
+          )
+          as String);
+
+  @override
+  String get emptyStateAddMeasurement =>
+      (super.noSuchMethod(
+            Invocation.getter(#emptyStateAddMeasurement),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#emptyStateAddMeasurement),
+            ),
+          )
+          as String);
+
+  @override
+  String get emptyStateAddMeasurementEntry =>
+      (super.noSuchMethod(
+            Invocation.getter(#emptyStateAddMeasurementEntry),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#emptyStateAddMeasurementEntry),
+            ),
+          )
+          as String);
+
+  @override
+  String get emptyStateCreateNutritionPlan =>
+      (super.noSuchMethod(
+            Invocation.getter(#emptyStateCreateNutritionPlan),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#emptyStateCreateNutritionPlan),
+            ),
+          )
+          as String);
+
+  @override
+  String get emptyStateCreateRoutine =>
+      (super.noSuchMethod(
+            Invocation.getter(#emptyStateCreateRoutine),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#emptyStateCreateRoutine),
+            ),
+          )
+          as String);
+
+  @override
+  String get emptyStateFilterSubtitle =>
+      (super.noSuchMethod(
+            Invocation.getter(#emptyStateFilterSubtitle),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#emptyStateFilterSubtitle),
+            ),
+          )
+          as String);
+
+  @override
+  String get emptyStateLogWeight =>
+      (super.noSuchMethod(
+            Invocation.getter(#emptyStateLogWeight),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#emptyStateLogWeight),
+            ),
+          )
+          as String);
+
+  @override
+  String get emptyStateLogWorkout =>
+      (super.noSuchMethod(
+            Invocation.getter(#emptyStateLogWorkout),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#emptyStateLogWorkout),
+            ),
+          )
+          as String);
+
 }

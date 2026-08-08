@@ -18,15 +18,17 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
+import 'package:wger/core/form_screen.dart';
 import 'package:wger/core/formatting/formatting.dart';
 import 'package:wger/core/widgets/async_value_widget.dart';
 import 'package:wger/core/widgets/confirm_delete_dialog.dart';
-import 'package:wger/core/widgets/text_prompt.dart';
+import 'package:wger/core/widgets/empty_state.dart';
 import 'package:wger/features/account/providers/user_profile_notifier.dart';
 import 'package:wger/features/measurements/measurements.dart';
 import 'package:wger/features/measurements/widgets/charts.dart';
 import 'package:wger/features/nutrition/providers/nutrition_notifier.dart';
 import 'package:wger/features/nutrition/screens/nutritional_plan_screen.dart';
+import 'package:wger/features/nutrition/widgets/forms.dart';
 import 'package:wger/features/weight/providers/body_weight_notifier.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
@@ -107,7 +109,24 @@ class NutritionalPlansList extends riverpod.ConsumerWidget {
       data: (nutritionState) {
         final plans = nutritionState.plans;
         if (plans.isEmpty) {
-          return const TextPrompt();
+          final i18n = AppLocalizations.of(context);
+          return EmptyState(
+            icon: Icons.restaurant_menu,
+            title: i18n.noNutritionalPlans,
+            subtitle: i18n.emptyStateCreateNutritionPlan,
+            actionLabel: i18n.newNutritionalPlan,
+            onAction: () {
+              Navigator.pushNamed(
+                context,
+                FormScreen.routeName,
+                arguments: FormScreenArguments(
+                  i18n.newNutritionalPlan,
+                  hasListView: true,
+                  PlanForm(),
+                ),
+              );
+            },
+          );
         }
         return ListView.builder(
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),

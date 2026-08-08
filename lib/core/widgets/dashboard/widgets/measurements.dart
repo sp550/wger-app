@@ -48,7 +48,7 @@ class _DashboardMeasurementWidgetState extends ConsumerState<DashboardMeasuremen
       data: (categoriesList) {
         if (categoriesList.isEmpty) {
           return NothingFound(
-            AppLocalizations.of(context).moreMeasurementEntries,
+            AppLocalizations.of(context).noMeasurements,
             AppLocalizations.of(context).newEntry,
             const MeasurementCategoryForm(),
           );

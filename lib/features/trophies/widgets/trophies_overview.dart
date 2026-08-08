@@ -19,6 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/core/material.dart';
+import 'package:wger/core/widgets/empty_state.dart';
 import 'package:wger/features/trophies/models/user_trophy_progression.dart';
 import 'package:wger/features/trophies/providers/trophy_notifier.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
@@ -44,17 +45,11 @@ class TrophiesOverview extends ConsumerWidget {
       crossAxisCount = 5;
     }
 
-    // If empty, show placeholder
+    // If empty, show a clear empty state instead of a bare line of text.
     if (trophyState.trophyProgression.isEmpty) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Text(
-            i18n.noTrophies,
-            style: Theme.of(context).textTheme.bodyLarge,
-            textAlign: TextAlign.center,
-          ),
-        ),
+      return EmptyState(
+        icon: Icons.emoji_events_outlined,
+        title: i18n.noTrophies,
       );
     }
 

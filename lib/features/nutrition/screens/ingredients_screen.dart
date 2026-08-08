@@ -19,6 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/core/wide_screen_wrapper.dart';
+import 'package:wger/core/widgets/empty_state.dart';
 import 'package:wger/core/widgets/progress_indicator.dart';
 import 'package:wger/features/nutrition/models/ingredient.dart';
 import 'package:wger/features/nutrition/providers/ingredient_filters_notifier.dart';
@@ -82,6 +83,14 @@ class _IngredientsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (ingredientList.isEmpty) {
+      final i18n = AppLocalizations.of(context);
+      return EmptyState(
+        icon: Icons.search_off,
+        title: i18n.noIngredientsFound,
+        subtitle: i18n.emptyStateFilterSubtitle,
+      );
+    }
     return ListView.separated(
       separatorBuilder: (context, index) {
         return const Divider(thickness: 1);
