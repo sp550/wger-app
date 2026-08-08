@@ -78,6 +78,7 @@ class _FilterRowState extends ConsumerState<FilterRow> {
           Row(
             children: [
               IconButton(
+                tooltip: AppLocalizations.of(context).filter,
                 onPressed: () async {
                   showModalBottomSheet(
                     context: context,
@@ -93,6 +94,7 @@ class _FilterRowState extends ConsumerState<FilterRow> {
                 icon: const Icon(Icons.filter_alt),
               ),
               PopupMenuButton<ExerciseMoreOption>(
+                tooltip: MaterialLocalizations.of(context).moreButtonTooltip,
                 itemBuilder: (context) {
                   return [
                     PopupMenuItem<ExerciseMoreOption>(

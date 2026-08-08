@@ -81,6 +81,9 @@ class _FormSubmitButtonState extends State<FormSubmitButton> {
         if (_error != null) FormHttpErrorsWidget(_error!),
         ElevatedButton(
           onPressed: _isSaving || !widget.enabled ? null : _handlePressed,
+          // 48dp minimum height so the primary form action is comfortable to
+          // tap (M3's 40dp text-button default is below the touch-target rule).
+          style: ElevatedButton.styleFrom(minimumSize: const Size(64, 48)),
           child: _isSaving ? const FormProgressIndicator() : Text(widget.label),
         ),
       ],

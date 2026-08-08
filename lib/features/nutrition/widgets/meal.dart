@@ -364,6 +364,7 @@ class MealEditingToolbar extends ConsumerWidget {
         spacing: 8,
         children: [
           TextButton.icon(
+            style: TextButton.styleFrom(minimumSize: const Size(64, 48)),
             icon: const Icon(Icons.add),
             label: Text(AppLocalizations.of(context).addIngredient),
             onPressed: () {
@@ -379,6 +380,7 @@ class MealEditingToolbar extends ConsumerWidget {
             },
           ),
           TextButton.icon(
+            style: TextButton.styleFrom(minimumSize: const Size(64, 48)),
             label: Text(AppLocalizations.of(context).edit),
             onPressed: () {
               Navigator.pushNamed(
@@ -393,6 +395,7 @@ class MealEditingToolbar extends ConsumerWidget {
             icon: const Icon(Icons.timer),
           ),
           TextButton.icon(
+            style: TextButton.styleFrom(minimumSize: const Size(64, 48)),
             onPressed: () {
               // Delete the meal
               ref.read(nutritionProvider.notifier).deleteMeal(meal);

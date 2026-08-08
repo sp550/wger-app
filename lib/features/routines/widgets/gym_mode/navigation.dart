@@ -22,6 +22,7 @@ import 'package:wger/core/consts.dart';
 import 'package:wger/features/routines/providers/gym_state_notifier.dart';
 import 'package:wger/features/routines/widgets/gym_mode/elapsed_time.dart';
 import 'package:wger/features/routines/widgets/gym_mode/workout_menu.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/theme/theme.dart';
 
 class NavigationHeader extends StatelessWidget {
@@ -41,6 +42,7 @@ class NavigationHeader extends StatelessWidget {
     return Row(
       children: [
         IconButton(
+          tooltip: AppLocalizations.of(context).close,
           icon: const Icon(Icons.close),
           onPressed: () {
             Navigator.of(context).pop();
@@ -57,6 +59,7 @@ class NavigationHeader extends StatelessWidget {
           ),
         ),
         IconButton(
+          tooltip: AppLocalizations.of(context).jumpTo,
           icon: const Icon(Icons.menu),
           onPressed: () {
             showDialog(
@@ -91,6 +94,7 @@ class NavigationFooter extends ConsumerWidget {
       children: [
         if (showPrevious)
           IconButton(
+            tooltip: AppLocalizations.of(context).previous,
             icon: const Icon(Icons.chevron_left),
             onPressed: () {
               _controller.previousPage(
@@ -127,6 +131,7 @@ class NavigationFooter extends ConsumerWidget {
         ),
         if (showNext)
           IconButton(
+            tooltip: AppLocalizations.of(context).next,
             icon: const Icon(Icons.chevron_right),
             onPressed: () {
               _controller.nextPage(

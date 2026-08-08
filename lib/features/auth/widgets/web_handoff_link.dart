@@ -38,7 +38,8 @@ class WebHandoffLink extends StatelessWidget {
       child: Opacity(
         opacity: isEnabled ? 1.0 : 0.5,
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+          // 48dp tap target: two text lines plus a little breathing room.
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [

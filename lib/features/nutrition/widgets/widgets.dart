@@ -244,6 +244,7 @@ class _IngredientTypeaheadState extends ConsumerState<IngredientTypeahead> {
               ),
               subtitle: chips.isNotEmpty ? Wrap(spacing: 4, runSpacing: 4, children: chips) : null,
               trailing: IconButton(
+                tooltip: AppLocalizations.of(context).toggleDetails,
                 icon: const Icon(Icons.info_outline),
                 onPressed: () {
                   showIngredientDetails(
@@ -273,6 +274,7 @@ class _IngredientTypeaheadState extends ConsumerState<IngredientTypeahead> {
   Widget scanButton() {
     return IconButton(
       key: const Key('scan-button'),
+      tooltip: AppLocalizations.of(context).scanBarcode,
       icon: const FaIcon(FontAwesomeIcons.barcode),
       onPressed: () async {
         if (!widget.test) {
@@ -314,6 +316,7 @@ class _IngredientTypeaheadState extends ConsumerState<IngredientTypeahead> {
     final activeFilterCount = filters.activeFilterCount(languageCode);
 
     return IconButton(
+      tooltip: AppLocalizations.of(context).filter,
       icon: Badge(
         label: Text('$activeFilterCount'),
         isLabelVisible: activeFilterCount > 0,

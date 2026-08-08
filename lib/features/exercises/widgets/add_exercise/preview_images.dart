@@ -63,17 +63,25 @@ class PreviewExerciseImages extends ConsumerWidget {
             Positioned(
               top: 4,
               right: 4,
-              child: IconButton(
-                icon: const Icon(Icons.close),
-                color: Colors.white,
-                iconSize: 20,
-                style: IconButton.styleFrom(
-                  backgroundColor: Colors.black.withValues(alpha: 0.6),
-                  padding: const EdgeInsets.all(4),
+              // 48dp hit area for the close glyph: the button keeps its
+              // compact visual chip (iconSize 20 + 4 padding) while the
+              // surrounding box makes it comfortable to tap.
+              child: SizedBox(
+                width: 48,
+                height: 48,
+                child: IconButton(
+                  tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
+                  icon: const Icon(Icons.close),
+                  color: Colors.white,
+                  iconSize: 20,
+                  style: IconButton.styleFrom(
+                    backgroundColor: Colors.black.withValues(alpha: 0.6),
+                    padding: const EdgeInsets.all(4),
+                  ),
+                  onPressed: () {
+                    ref.read(addExerciseProvider.notifier).removeImage(image.path);
+                  },
                 ),
-                onPressed: () {
-                  ref.read(addExerciseProvider.notifier).removeImage(image.path);
-                },
               ),
             ),
         ],

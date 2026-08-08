@@ -88,6 +88,7 @@ class _TimeInputWidgetState extends State<TimeInputWidget> {
         errorMaxLines: 2,
         suffixIcon: widget.onCleared != null && _value != null
             ? IconButton(
+                tooltip: MaterialLocalizations.of(context).clearButtonTooltip,
                 icon: const Icon(Icons.clear),
                 onPressed: () {
                   setState(() => _value = null);
@@ -195,6 +196,7 @@ class _DateInputWidgetState extends State<DateInputWidget> {
         errorMaxLines: 2,
         suffixIcon: widget.onCleared != null && _value != null
             ? IconButton(
+                tooltip: MaterialLocalizations.of(context).clearButtonTooltip,
                 icon: const Icon(Icons.clear),
                 onPressed: () {
                   setState(() => _value = null);

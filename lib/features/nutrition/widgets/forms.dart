@@ -445,6 +445,7 @@ class IngredientFormState extends ConsumerState<IngredientForm> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           IconButton(
+                            tooltip: AppLocalizations.of(context).toggleDetails,
                             icon: const Icon(Icons.info_outline),
                             onPressed: () {
                               showIngredientDetails(

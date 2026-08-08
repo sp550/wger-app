@@ -40,7 +40,8 @@ class AuthModeSwitchLink extends StatelessWidget {
       key: const Key('toggleActionButton'),
       onTap: onTap,
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+        // 48dp tap target: the text line plus generous vertical padding.
+        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 4),
         child: Text.rich(
           TextSpan(
             children: [

@@ -90,6 +90,7 @@ class CategoriesCard extends StatelessWidget {
                           },
                         ),
                         IconButton(
+                          tooltip: AppLocalizations.of(context).add,
                           onPressed: () async {
                             await Navigator.pushNamed(
                               context,

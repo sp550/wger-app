@@ -149,6 +149,7 @@ class _SlotEntryFormState extends ConsumerState<SlotEntryForm> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 IconButton(
+                  tooltip: i18n.edit,
                   onPressed: () {
                     setState(() => _edit = !_edit);
                   },
@@ -158,6 +159,7 @@ class _SlotEntryFormState extends ConsumerState<SlotEntryForm> {
                 ),
                 IconButton(
                   icon: Icon(Icons.delete, size: iconSize),
+                  tooltip: i18n.delete,
                   onPressed: isDeleting || !isOnline
                       ? null
                       : () async {
@@ -489,7 +491,12 @@ class _SlotFormWidgetStateNg extends ConsumerState<ReorderableSlotList> {
                     leading: selectedSlotId == null
                         ? ReorderableDragStartListener(
                             index: index,
-                            child: const Icon(Icons.drag_handle),
+                            // 48dp drag surface; the 24px glyph keeps its size.
+                            child: const SizedBox(
+                              width: 48,
+                              height: 48,
+                              child: Center(child: Icon(Icons.drag_handle)),
+                            ),
                           )
                         : const Icon(Icons.block),
                     subtitle: slot.entries.isEmpty
@@ -506,6 +513,7 @@ class _SlotFormWidgetStateNg extends ConsumerState<ReorderableSlotList> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         IconButton(
+                          tooltip: i18n.edit,
                           onPressed: () {
                             setState(() {
                               if (selectedSlotId == slot.id) {
@@ -521,6 +529,7 @@ class _SlotFormWidgetStateNg extends ConsumerState<ReorderableSlotList> {
                         ),
                         IconButton(
                           icon: const Icon(Icons.delete),
+                          tooltip: i18n.delete,
                           onPressed: isDeletingSlot == index
                               ? null
                               : () async {

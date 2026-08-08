@@ -143,10 +143,22 @@ class _ControlsOverlay extends StatelessWidget {
                   ),
                 ),
         ),
-        GestureDetector(
-          onTap: () {
-            controller.value.isPlaying ? controller.pause() : controller.play();
-          },
+        // Full-surface play/pause toggle: the bare GestureDetector previously
+        // had no child (and therefore no size), so taps did nothing. A
+        // Positioned.fill layer with opaque hit-testing makes the whole video
+        // area toggle playback; the progress bar and speed menu are painted
+        // above it and keep their own gestures.
+        Positioned.fill(
+          child: Semantics(
+            button: true,
+            label: controller.value.isPlaying ? 'Pause video' : 'Play video',
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () {
+                controller.value.isPlaying ? controller.pause() : controller.play();
+              },
+            ),
+          ),
         ),
         Align(
           alignment: Alignment.topRight,

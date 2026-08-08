@@ -207,36 +207,43 @@ class LogsPlatesWidget extends ConsumerWidget {
             onTap: () {
               Navigator.of(context).pushNamed(ConfigurePlatesScreen.routeName);
             },
+            // Full 48dp tap target for the plate-calculator strip; the plates
+            // row keeps its visual size and stays centered inside it.
             child: SizedBox(
-              child: plateWeightsState.hasPlates
-                  ? Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        ...plateWeightsState.calculatePlates.entries.map(
-                          (entry) => Row(
-                            children: [
-                              Text(entry.value.toString()),
-                              const Text('×'),
-                              PlateWeight(
-                                value: entry.key,
-                                size: 37,
-                                padding: 2,
-                                margin: 0,
-                                color: ref.read(plateCalculatorProvider).getColor(entry.key),
-                              ),
-                              const SizedBox(width: 8),
-                            ],
+              height: 48,
+              child: Center(
+                child: plateWeightsState.hasPlates
+                    ? Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ...plateWeightsState.calculatePlates.entries.map(
+                            (entry) => Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(entry.value.toString()),
+                                const Text('×'),
+                                PlateWeight(
+                                  value: entry.key,
+                                  size: 37,
+                                  padding: 2,
+                                  margin: 0,
+                                  color: ref.read(plateCalculatorProvider).getColor(entry.key),
+                                ),
+                                const SizedBox(width: 8),
+                              ],
+                            ),
                           ),
+                        ],
+                      )
+                    : Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: MutedText(
+                          AppLocalizations.of(context).plateCalculatorNotDivisible,
+                          textAlign: TextAlign.center,
                         ),
-                      ],
-                    )
-                  : Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      child: MutedText(
-                        AppLocalizations.of(context).plateCalculatorNotDivisible,
-                        textAlign: TextAlign.center,
                       ),
-                    ),
+              ),
             ),
           ),
           const SizedBox(height: 4),

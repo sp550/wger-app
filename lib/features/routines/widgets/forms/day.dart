@@ -74,7 +74,12 @@ class _ReorderableDaysListState extends ConsumerState<ReorderableDaysList> {
                 leading: isOnline
                     ? ReorderableDragStartListener(
                         index: index,
-                        child: const Icon(Icons.drag_handle),
+                        // 48dp drag surface; the 24px glyph keeps its size.
+                        child: const SizedBox(
+                          width: 48,
+                          height: 48,
+                          child: Center(child: Icon(Icons.drag_handle)),
+                        ),
                       )
                     : const Icon(Icons.drag_handle, color: Colors.grey),
                 subtitle: Text(
@@ -86,11 +91,13 @@ class _ReorderableDaysListState extends ConsumerState<ReorderableDaysList> {
                   children: [
                     IconButton(
                       key: ValueKey('edit-day-${day.id}'),
+                      tooltip: i18n.edit,
                       onPressed: () => widget.onDaySelected(day.id!),
                       icon: isDaySelected ? const Icon(Icons.edit_off) : const Icon(Icons.edit),
                     ),
                     IconButton(
                       icon: const Icon(Icons.delete),
+                      tooltip: i18n.delete,
                       onPressed: isOnline
                           ? () => _showDeleteConfirmationDialog(context, day)
                           : null,

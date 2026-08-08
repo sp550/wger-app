@@ -129,6 +129,7 @@ class _AdvancedSheetState extends State<AdvancedSheet> {
                   ),
                   IconButton(
                     key: const Key('advancedCloseButton'),
+                    tooltip: AppLocalizations.of(context).close,
                     icon: const Icon(Icons.close),
                     onPressed: () => Navigator.pop(context),
                   ),

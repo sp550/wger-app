@@ -101,6 +101,7 @@ class ImageDetail extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               IconButton(
+                tooltip: AppLocalizations.of(context).delete,
                 icon: const Icon(Icons.delete),
                 onPressed: () {
                   ref.read(galleryProvider.notifier).deleteImage(image);
@@ -109,6 +110,7 @@ class ImageDetail extends ConsumerWidget {
               ),
               if (!isDesktop)
                 IconButton(
+                  tooltip: AppLocalizations.of(context).edit,
                   icon: const Icon(Icons.edit),
                   onPressed: () {
                     Navigator.pushNamed(

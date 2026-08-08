@@ -365,6 +365,7 @@ class DetailContentWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context);
     return Column(
       children: [
         ...dayDataList.where((dayData) => dayData.day != null).map((dayData) {
@@ -395,6 +396,7 @@ class DetailContentWidget extends StatelessWidget {
                       const Icon(Icons.hotel)
                     else
                       IconButton(
+                        tooltip: i18n.start,
                         icon: const Icon(Icons.play_arrow),
                         color: wgerPrimaryButtonColor,
                         onPressed: () {

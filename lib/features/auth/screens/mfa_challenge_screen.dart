@@ -123,7 +123,7 @@ class _MfaChallengeScreenState extends ConsumerState<MfaChallengeScreen> {
     return Scaffold(
       appBar: AppBar(title: Text(i18n.mfaChallengeTitle)),
       body: SafeArea(
-        child: Padding(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.all(24.0),
           child: _canChallengeLocally
               ? _buildChallengeForm(context, i18n)

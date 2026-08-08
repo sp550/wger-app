@@ -86,6 +86,7 @@ class WeightForm extends riverpod.ConsumerWidget {
                 children: [
                   IconButton(
                     key: const Key('quickMinus'),
+                    tooltip: AppLocalizations.of(context).decrease,
                     icon: const FaIcon(FontAwesomeIcons.circleMinus),
                     onPressed: () {
                       final parsed = numberFormat.tryParse(weightController.text);
@@ -101,6 +102,7 @@ class WeightForm extends riverpod.ConsumerWidget {
                   ),
                   IconButton(
                     key: const Key('quickMinusSmall'),
+                    tooltip: AppLocalizations.of(context).decrease,
                     icon: const FaIcon(FontAwesomeIcons.minus),
                     onPressed: () {
                       final parsed = numberFormat.tryParse(weightController.text);
@@ -121,6 +123,7 @@ class WeightForm extends riverpod.ConsumerWidget {
                 children: [
                   IconButton(
                     key: const Key('quickPlusSmall'),
+                    tooltip: AppLocalizations.of(context).increase,
                     icon: const FaIcon(FontAwesomeIcons.plus),
                     onPressed: () {
                       final parsed = numberFormat.tryParse(weightController.text);
@@ -136,6 +139,7 @@ class WeightForm extends riverpod.ConsumerWidget {
                   ),
                   IconButton(
                     key: const Key('quickPlus'),
+                    tooltip: AppLocalizations.of(context).increase,
                     icon: const FaIcon(FontAwesomeIcons.circlePlus),
                     onPressed: () {
                       final parsed = numberFormat.tryParse(weightController.text);
