@@ -125,6 +125,7 @@ class _GymModeOptionsState extends ConsumerState<GymModeOptions> {
                           decoration: InputDecoration(
                             labelText: i18n.gymModeDefaultCountdownTime,
                             suffix: IconButton(
+                              tooltip: i18n.reset,
                               onPressed: gymState.showTimerPages && gymState.useCountdownBetweenSets
                                   ? () => gymNotifier.setCountdownDuration(
                                       DEFAULT_COUNTDOWN_DURATION,

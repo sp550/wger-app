@@ -30,6 +30,7 @@ class MealItemValuesTile extends ConsumerWidget {
       leading: IngredientAvatar(ingredient: ingredient),
       title: Text(getShortNutritionValues(nutritionalValues, context)),
       trailing: IconButton(
+        tooltip: AppLocalizations.of(context).toggleDetails,
         icon: const Icon(Icons.info_outline),
         onPressed: () {
           showIngredientDetails(context, ref, ingredient);

@@ -78,6 +78,7 @@ class _IngredientFilterRowState extends ConsumerState<IngredientFilterRow> {
           Row(
             children: [
               IconButton(
+                tooltip: i18n.filter,
                 onPressed: () => showDialog(
                   context: context,
                   builder: (_) => const IngredientFilterDialog(),

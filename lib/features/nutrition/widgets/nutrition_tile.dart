@@ -38,8 +38,11 @@ class NutritionTile extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 8),
+          // The trailing slot grows to a full 48dp tap target for icon
+          // buttons; plain placeholders keep the original 20px so the row
+          // rhythm (and golden rendering) stays unchanged.
           ConstrainedBox(
-            constraints: const BoxConstraints(minWidth: 20, maxWidth: 20),
+            constraints: const BoxConstraints(minWidth: 20, maxWidth: 48),
             child: trailing ?? const SizedBox(width: 20),
           ),
         ],

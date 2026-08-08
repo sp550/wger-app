@@ -192,8 +192,10 @@ class _WeightInputWidgetState extends ConsumerState<WeightInputWidget> {
           icon: const Icon(Icons.remove),
           iconSize: 25,
           padding: EdgeInsets.zero,
-          constraints: const BoxConstraints(),
-          visualDensity: VisualDensity.compact,
+          // 48dp hit target; the glyph stays 25 so the row keeps its rhythm.
+          // (No visualDensity.compact: it would shrink the effective size
+          // below the 48dp minimum.)
+          constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
           tooltip: i18n.decrease,
           onPressed: () {
             final base = widget.value ?? 0;
@@ -243,8 +245,10 @@ class _WeightInputWidgetState extends ConsumerState<WeightInputWidget> {
           icon: const Icon(Icons.add),
           iconSize: 25,
           padding: EdgeInsets.zero,
-          constraints: const BoxConstraints(),
-          visualDensity: VisualDensity.compact,
+          // 48dp hit target; the glyph stays 25 so the row keeps its rhythm.
+          // (No visualDensity.compact: it would shrink the effective size
+          // below the 48dp minimum.)
+          constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
           tooltip: i18n.increase,
           onPressed: () {
             final base = widget.value ?? 0;

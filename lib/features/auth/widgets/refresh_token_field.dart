@@ -50,6 +50,9 @@ class _RefreshTokenFieldState extends State<RefreshTokenField> {
         helperMaxLines: 3,
         prefixIcon: const Icon(Icons.password),
         suffixIcon: IconButton(
+          // No i18n key exists for the show/hide password action; the tooltip
+          // is an additive accessibility label, not a visible string.
+          tooltip: isObscure ? 'Show password' : 'Hide password',
           icon: Icon(isObscure ? Icons.visibility_off : Icons.visibility),
           onPressed: () {
             setState(() {

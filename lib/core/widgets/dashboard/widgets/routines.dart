@@ -395,6 +395,7 @@ class DetailContentWidget extends StatelessWidget {
                       const Icon(Icons.hotel)
                     else
                       IconButton(
+                        tooltip: i18n.start,
                         icon: const Icon(Icons.play_arrow),
                         color: wgerPrimaryButtonColor,
                         onPressed: () {

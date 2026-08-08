@@ -105,11 +105,13 @@ class DayLogWidget extends ConsumerWidget {
                                     IconButton(
                                       icon: const Icon(Icons.edit),
                                       key: ValueKey('edit-log-${log.id}'),
+                                      tooltip: i18n.edit,
                                       onPressed: () => showLogEditDialog(context, log),
                                     ),
                                     IconButton(
                                       icon: const Icon(Icons.delete),
                                       key: ValueKey('delete-log-${log.id}'),
+                                      tooltip: i18n.delete,
                                       onPressed: () {
                                         showDeleteLogDialog(context, translation.name, log);
                                       },

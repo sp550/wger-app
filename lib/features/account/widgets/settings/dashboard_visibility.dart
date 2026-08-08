@@ -63,6 +63,9 @@ class SettingsDashboardVisibility extends ConsumerWidget {
           key: ValueKey(w),
           title: Text(getTitle(w)),
           leading: IconButton(
+            // No i18n key exists for the show/hide action; the tooltip is an
+            // additive accessibility label, not a visible string.
+            tooltip: item.isVisible ? 'Hide from dashboard' : 'Show on dashboard',
             icon: item.isVisible
                 ? const Icon(Icons.visibility)
                 : Icon(
@@ -73,7 +76,12 @@ class SettingsDashboardVisibility extends ConsumerWidget {
           ),
           trailing: ReorderableDragStartListener(
             index: index,
-            child: const Icon(Icons.drag_handle),
+            // 48dp drag surface; the 24px glyph stays visually the same.
+            child: const SizedBox(
+              width: 48,
+              height: 48,
+              child: Center(child: Icon(Icons.drag_handle)),
+            ),
           ),
         );
       }).toList(),

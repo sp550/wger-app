@@ -144,6 +144,7 @@ class DashboardWeightWidget extends ConsumerWidget {
                       },
                     ),
                     IconButton(
+                      tooltip: AppLocalizations.of(context).add,
                       icon: const Icon(Icons.add),
                       onPressed: () {
                         Navigator.pushNamed(

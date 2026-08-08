@@ -213,6 +213,9 @@ class _ProgressionTabState extends ConsumerState<ProgressionTab> {
                     //mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       IconButton(
+                        // No i18n key exists for the swap action; the tooltip
+                        // is an additive accessibility label, not a visible string.
+                        tooltip: 'Swap exercise',
                         onPressed: page.allLogsDone
                             ? null
                             : () {
@@ -235,6 +238,7 @@ class _ProgressionTabState extends ConsumerState<ProgressionTab> {
                         ),
                       ),
                       IconButton(
+                        tooltip: AppLocalizations.of(context).addExercise,
                         onPressed: page.allLogsDone
                             ? null
                             : () {
@@ -256,6 +260,7 @@ class _ProgressionTabState extends ConsumerState<ProgressionTab> {
                       ),
                       Expanded(child: Container()),
                       IconButton(
+                        tooltip: AppLocalizations.of(context).next,
                         onPressed: () {
                           widget._controller.animateToPage(
                             page.pageIndex,

@@ -47,12 +47,14 @@ class MainAppBar extends ConsumerWidget implements PreferredSizeWidget {
       title: Text(_title),
       actions: [
         IconButton(
+          tooltip: AppLocalizations.of(context).dashboardWidgets,
           icon: const Icon(Icons.widgets_outlined),
           onPressed: () {
             Navigator.of(context).pushNamed(ConfigureDashboardWidgetsScreen.routeName);
           },
         ),
         IconButton(
+          tooltip: status.label,
           icon: Icon(status.icon),
           onPressed: () => showDialog<void>(
             context: context,
@@ -78,6 +80,7 @@ class MainAppBar extends ConsumerWidget implements PreferredSizeWidget {
           ),
         ),
         IconButton(
+          tooltip: AppLocalizations.of(context).settingsTitle,
           icon: const Icon(Icons.settings),
           onPressed: () async {
             return showDialog(

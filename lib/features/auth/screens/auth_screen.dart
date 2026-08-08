@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:wger/features/auth/widgets/auth_card.dart';
 import 'package:wger/theme/theme.dart';
 
@@ -30,53 +31,58 @@ class AuthScreen extends StatelessWidget {
     final deviceSize = MediaQuery.sizeOf(context);
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
-      body: Stack(
-        children: [
-          Positioned(
-            top: 0,
-            right: 0,
-            left: 0,
-            child: Container(
-              height: 0.55 * deviceSize.height,
-              color: wgerPrimaryColor,
-            ),
-          ),
-          SingleChildScrollView(
-            child: SizedBox(
-              height: deviceSize.height,
-              width: deviceSize.width,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  SizedBox(height: 0.15 * deviceSize.height),
-                  const Image(
-                    image: AssetImage('assets/images/logo-white.png'),
-                    width: 85,
-                    height: 85,
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(bottom: 16.0),
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 8.0,
-                      horizontal: 96.0,
-                    ),
-                    child: const Text(
-                      'wger',
-                      style: TextStyle(
-                        color: Colors.white70,
-                        fontSize: 30,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 0.025 * deviceSize.height),
-                  const Flexible(child: AuthCard()),
-                ],
+      // The top of the screen is the dark primary header, so the status-bar
+      // icons must stay light to remain readable above it.
+      body: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle.light,
+        child: Stack(
+          children: [
+            Positioned(
+              top: 0,
+              right: 0,
+              left: 0,
+              child: Container(
+                height: 0.55 * deviceSize.height,
+                color: wgerPrimaryColor,
               ),
             ),
-          ),
-        ],
+            SingleChildScrollView(
+              child: SizedBox(
+                height: deviceSize.height,
+                width: deviceSize.width,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(height: 0.15 * deviceSize.height),
+                    const Image(
+                      image: AssetImage('assets/images/logo-white.png'),
+                      width: 85,
+                      height: 85,
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 16.0),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 8.0,
+                        horizontal: 96.0,
+                      ),
+                      child: const Text(
+                        'wger',
+                        style: TextStyle(
+                          color: Colors.white70,
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 0.025 * deviceSize.height),
+                    const Flexible(child: AuthCard()),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

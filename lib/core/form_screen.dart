@@ -63,10 +63,20 @@ class FormScreen extends StatelessWidget {
                   child: args.widget,
                 ),
               )
-            : Column(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [Padding(padding: args.padding, child: args.widget)],
+            // Short forms stay bottom-anchored when they fit, but the content
+            // must still scroll once the keyboard opens (or on short screens)
+            // so the focused field and the submit button stay reachable.
+            : LayoutBuilder(
+                builder: (context, constraints) => SingleChildScrollView(
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [Padding(padding: args.padding, child: args.widget)],
+                    ),
+                  ),
+                ),
               ),
       ),
     );

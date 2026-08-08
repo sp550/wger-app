@@ -177,6 +177,7 @@ class _ExerciseAutocompleterState extends ConsumerState<ExerciseAutocompleter> {
     final activeFilterCount = filters.activeFilterCount(languageCode);
 
     return IconButton(
+      tooltip: AppLocalizations.of(context).filter,
       icon: Badge(
         label: Text('$activeFilterCount'),
         isLabelVisible: activeFilterCount > 0,

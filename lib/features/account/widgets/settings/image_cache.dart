@@ -75,6 +75,7 @@ class _SettingsImageCacheState extends State<SettingsImageCache> {
       ),
       trailing: IconButton(
         key: const ValueKey('cacheIconImages'),
+        tooltip: i18n.delete,
         icon: const Icon(Icons.delete),
         onPressed: stats == null ? null : _clear,
       ),

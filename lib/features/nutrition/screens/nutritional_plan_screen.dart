@@ -105,6 +105,7 @@ class NutritionalPlanScreen extends ConsumerWidget {
             actions: [
               if (!nutritionalPlan.onlyLogging)
                 IconButton(
+                  tooltip: AppLocalizations.of(context).addMeal,
                   icon: const SvgIcon(
                     icon: SvgIconData('assets/icons/meal-add.svg'),
                   ),

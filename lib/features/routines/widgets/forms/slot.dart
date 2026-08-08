@@ -293,7 +293,12 @@ class _SlotFormWidgetStateNg extends ConsumerState<ReorderableSlotList> {
                   leading: selectedSlotId == null && isOnline
                       ? ReorderableDragStartListener(
                           index: index,
-                          child: const Icon(Icons.drag_handle),
+                          // 48dp drag surface; the 24px glyph keeps its size.
+                          child: const SizedBox(
+                            width: 48,
+                            height: 48,
+                            child: Center(child: Icon(Icons.drag_handle)),
+                          ),
                         )
                       : Icon(
                           selectedSlotId == null ? Icons.drag_handle : Icons.block,
@@ -318,6 +323,7 @@ class _SlotFormWidgetStateNg extends ConsumerState<ReorderableSlotList> {
                               : () => _handleAddSet(slot, index),
                         ),
                       IconButton(
+                        tooltip: i18n.edit,
                         onPressed: () {
                           setState(() {
                             if (selectedSlotId == slot.id) {
@@ -333,6 +339,7 @@ class _SlotFormWidgetStateNg extends ConsumerState<ReorderableSlotList> {
                       ),
                       IconButton(
                         icon: const Icon(Icons.delete),
+                        tooltip: i18n.delete,
                         onPressed: isDeletingSlot == index || !isOnline
                             ? null
                             : () async {

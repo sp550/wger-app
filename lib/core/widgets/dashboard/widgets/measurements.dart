@@ -71,6 +71,7 @@ class _DashboardMeasurementWidgetState extends ConsumerState<DashboardMeasuremen
                 // other dashboard widgets.
                 // maybe we should just add a "Go to all" at the bottom of the widget
                 trailing: IconButton(
+                  tooltip: AppLocalizations.of(context).measurements,
                   icon: const Icon(Icons.arrow_forward),
                   onPressed: () => Navigator.pushNamed(
                     context,

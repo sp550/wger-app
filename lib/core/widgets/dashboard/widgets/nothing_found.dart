@@ -38,6 +38,7 @@ class NothingFound extends StatelessWidget {
           if (_titleForm != null && _form != null)
             IconButton(
               iconSize: 30,
+              tooltip: _titleForm,
               icon: const Icon(Icons.add_box, color: wgerPrimaryButtonColor),
               onPressed: () {
                 Navigator.pushNamed(

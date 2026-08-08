@@ -91,4 +91,37 @@ void main() {
     // assert
     expect(result, equals(unit2));
   });
+
+  testWidgets('Quick add/remove steppers expose a 48dp touch target', (WidgetTester tester) async {
+    // The steppers used to collapse to the icon glyph size; they must keep a
+    // full-size hit area even though the glyph itself stays small.
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          routineWeightUnitProvider.overrideWithValue(const AsyncValue.data([unit1, unit2, unit3])),
+        ],
+        child: MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: const Scaffold(
+            body: Padding(
+              padding: EdgeInsets.all(16),
+              child: WeightInputWidget(value: 100, onChanged: _noopWeightChange),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    for (final icon in [Icons.add, Icons.remove]) {
+      final button = find.ancestor(of: find.byIcon(icon), matching: find.byType(IconButton));
+      expect(button, findsOneWidget);
+      final size = tester.getSize(button);
+      expect(size.width, greaterThanOrEqualTo(48), reason: '$icon hit target is too narrow');
+      expect(size.height, greaterThanOrEqualTo(48), reason: '$icon hit target is too short');
+    }
+  });
 }
+
+/// No-op change callback for [WeightInputWidget] in tests.
+void _noopWeightChange(num? _) {}
