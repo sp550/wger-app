@@ -65,7 +65,10 @@ class SettingsDashboardVisibility extends ConsumerWidget {
           leading: IconButton(
             icon: item.isVisible
                 ? const Icon(Icons.visibility)
-                : const Icon(Icons.visibility_off, color: Colors.grey),
+                : Icon(
+                    Icons.visibility_off,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
             onPressed: () => notifier.setWidgetVisible(w, !item.isVisible),
           ),
           trailing: ReorderableDragStartListener(

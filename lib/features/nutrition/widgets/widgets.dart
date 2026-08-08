@@ -181,12 +181,14 @@ class _IngredientTypeaheadState extends ConsumerState<IngredientTypeahead> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: Colors.green[100],
+                    color: Theme.of(context).colorScheme.tertiaryContainer,
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
                     i18n.isVegan,
-                    style: TextStyle(fontSize: 11, color: Colors.green[900]),
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                      color: Theme.of(context).colorScheme.onTertiaryContainer,
+                    ),
                   ),
                 ),
               );
@@ -195,12 +197,14 @@ class _IngredientTypeaheadState extends ConsumerState<IngredientTypeahead> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: Colors.green[100],
+                    color: Theme.of(context).colorScheme.tertiaryContainer,
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
                     i18n.isVegetarian,
-                    style: TextStyle(fontSize: 11, color: Colors.green[900]),
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                      color: Theme.of(context).colorScheme.onTertiaryContainer,
+                    ),
                   ),
                 ),
               );

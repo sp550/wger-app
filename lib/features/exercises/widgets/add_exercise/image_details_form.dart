@@ -207,7 +207,7 @@ class ImageTypeSelector extends StatelessWidget {
       children: [
         Text(
           i18n.imageDetailsImageType,
-          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+          style: Theme.of(context).textTheme.titleSmall,
         ),
         const SizedBox(height: 12),
         Wrap(

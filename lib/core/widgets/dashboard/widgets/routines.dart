@@ -380,7 +380,7 @@ class DetailContentWidget extends StatelessWidget {
                         dayData.day == null || dayData.day!.isRest
                             ? AppLocalizations.of(context).restDay
                             : dayData.day!.nameWithType,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
+                        style: Theme.of(context).textTheme.titleSmall,
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),

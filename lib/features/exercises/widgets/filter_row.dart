@@ -69,8 +69,8 @@ class _FilterRowState extends ConsumerState<FilterRow> {
               decoration: InputDecoration(
                 hintText: '${AppLocalizations.of(context).exerciseName}...',
                 contentPadding: const EdgeInsets.symmetric(horizontal: 12),
-                border: const OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.black),
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(color: Theme.of(context).colorScheme.outline),
                 ),
               ),
             ),

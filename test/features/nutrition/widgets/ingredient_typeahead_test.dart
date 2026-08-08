@@ -83,12 +83,13 @@ void main() {
     );
   });
 
-  Widget createWidgetUnderTest() {
+  Widget createWidgetUnderTest({ThemeData? theme}) {
     return ProviderScope(
       overrides: [
         ingredientRepositoryProvider.overrideWithValue(mockIngredientRepo),
       ],
       child: MaterialApp(
+        theme: theme,
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: Scaffold(
@@ -224,6 +225,43 @@ void main() {
 
     expect(find.text('Vegan'), findsNothing);
     expect(find.text('Vegetarian'), findsNothing);
+  });
+
+  testWidgets('Dietary chips keep contrast in dark mode', (WidgetTester tester) async {
+    // ingredient1 (Water) is vegan + vegetarian
+    when(
+      mockIngredientRepo.search(
+        any,
+        isOnline: anyNamed('isOnline'),
+        languageCode: anyNamed('languageCode'),
+        searchLanguage: anyNamed('searchLanguage'),
+        isVegan: anyNamed('isVegan'),
+        isVegetarian: anyNamed('isVegetarian'),
+        nutriscoreMax: anyNamed('nutriscoreMax'),
+      ),
+    ).thenAnswer((_) => Future.value([ingredient1]));
+
+    final darkTheme = ThemeData(brightness: Brightness.dark);
+    await tester.pumpWidget(createWidgetUnderTest(theme: darkTheme));
+    await tester.enterText(find.byType(TextFormField), 'Water');
+    await tester.pump(const Duration(milliseconds: 600));
+    await tester.pumpAndSettle();
+
+    final scheme = darkTheme.colorScheme;
+    final chipFinder = find.ancestor(
+      of: find.text('Vegan'),
+      matching: find.byType(Container),
+    );
+    expect(chipFinder, findsWidgets);
+
+    // The closest Container ancestor of the label is the chip itself.
+    final chip = tester.widget<Container>(chipFinder.first);
+    final decoration = chip.decoration! as BoxDecoration;
+    expect(decoration.color, scheme.tertiaryContainer);
+    expect(
+      tester.widget<Text>(find.text('Vegan')).style?.color,
+      scheme.onTertiaryContainer,
+    );
   });
 
   testWidgets('Search calls provider with correct filter values', (WidgetTester tester) async {

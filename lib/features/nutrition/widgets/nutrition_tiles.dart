@@ -67,7 +67,7 @@ class DiaryEntryTile extends ConsumerWidget {
     return NutritionTile(
       leading: Text(
         DateFormat.Hm(Localizations.localeOf(context).languageCode).format(diaryEntry.datetime),
-        style: const TextStyle(fontWeight: FontWeight.bold),
+        style: Theme.of(context).textTheme.titleSmall,
       ),
       title: Text(
         // Ingredient is null briefly between local insert and PowerSync

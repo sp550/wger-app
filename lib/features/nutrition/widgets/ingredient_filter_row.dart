@@ -68,8 +68,8 @@ class _IngredientFilterRowState extends ConsumerState<IngredientFilterRow> {
                 hintText: '${i18n.searchIngredient}...',
                 prefixIcon: const Icon(Icons.search),
                 contentPadding: const EdgeInsets.symmetric(horizontal: 12),
-                border: const OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.black),
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(color: Theme.of(context).colorScheme.outline),
                 ),
                 suffixIcon: _ClearSearchTermButton(controller: _ingredientNameController),
               ),
