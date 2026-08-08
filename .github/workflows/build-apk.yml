@@ -11,6 +11,10 @@ on:
         description: 'Build release APK (requires signing secrets)'
         type: boolean
         default: true
+  push:
+    tags:
+      - 'v*'
+
 permissions:
   contents: read
 
