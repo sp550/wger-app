@@ -365,6 +365,7 @@ class DetailContentWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context);
     return Column(
       children: [
         ...dayDataList.where((dayData) => dayData.day != null).map((dayData) {

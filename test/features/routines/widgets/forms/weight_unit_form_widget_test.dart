@@ -100,7 +100,7 @@ void main() {
         overrides: [
           routineWeightUnitProvider.overrideWithValue(const AsyncValue.data([unit1, unit2, unit3])),
         ],
-        child: MaterialApp(
+        child: const MaterialApp(
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           home: const Scaffold(
