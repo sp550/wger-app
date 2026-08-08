@@ -18,6 +18,7 @@
 
 import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 import 'package:wger/core/snackbar.dart';
@@ -95,6 +96,14 @@ class _SessionFormState extends ConsumerState<SessionForm> {
             key: const ValueKey('impression-toggle-buttons'),
             renderBorder: false,
             onPressed: (int index) {
+              // Light tick for the mood selection (toggles → selection click).
+              // Best-effort: haptics are unavailable in tests and on some
+              // desktop platforms.
+              try {
+                HapticFeedback.selectionClick();
+              } catch (_) {
+                // Haptics are best-effort; swallow plugin failures.
+              }
               setState(() {
                 _draft = _draft.copyWith(impression: WorkoutImpression.values[index]);
               });

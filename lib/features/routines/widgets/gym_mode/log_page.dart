@@ -554,14 +554,16 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
           SizedBox(
             width: double.infinity,
             height: 56,
-            child: FilledButton.icon(
-              key: const ValueKey('save-log-button'),
-              onPressed: _save,
-              icon: const Icon(Icons.check_circle_outline, size: 24),
-              label: Text(
-                i18n.log,
-                style: theme.textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.w800,
+            child: PressableScale(
+              child: FilledButton.icon(
+                key: const ValueKey('save-log-button'),
+                onPressed: _save,
+                icon: const Icon(Icons.check_circle_outline, size: 24),
+                label: Text(
+                  i18n.log,
+                  style: theme.textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.w800,
+                  ),
                 ),
               ),
             ),
