@@ -26,6 +26,7 @@ import 'package:wger/core/i18n.dart';
 import 'package:wger/core/snackbar.dart';
 import 'package:wger/core/widgets/core.dart';
 import 'package:wger/core/widgets/error.dart';
+import 'package:wger/core/widgets/letter_badge.dart';
 import 'package:wger/features/exercises/models/exercise.dart';
 import 'package:wger/features/routines/models/log.dart';
 import 'package:wger/features/routines/models/repetition_unit.dart';
@@ -99,12 +100,14 @@ class LogPage extends ConsumerWidget {
         : TextDecoration.none;
 
     final logPageCount = page.slotPages.where((e) => e.type == SlotPageType.log).length;
+    final exerciseName = setConfigData.exercise.getTranslation(languageCode).name;
 
     return Column(
       children: [
         NavigationHeader(
-          setConfigData.exercise.getTranslation(languageCode).name,
+          exerciseName,
           _controller,
+          leading: LetterBadge(text: exerciseName, size: 40),
         ),
 
         // Set progress: the current set number is the hero, the routine
@@ -159,6 +162,9 @@ class LogPage extends ConsumerWidget {
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
           child: Card(
             color: Theme.of(context).colorScheme.inversePrimary,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
             // color: Theme.of(context).secondaryHeaderColor,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -564,6 +570,8 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
             child: PressableScale(
               child: FilledButton.icon(
                 key: const ValueKey('save-log-button'),
+                // Full-pill primary CTA (Progression parity).
+                style: FilledButton.styleFrom(shape: const StadiumBorder()),
                 onPressed: _save,
                 icon: const Icon(Icons.check_circle_outline, size: 24),
                 label: Text(

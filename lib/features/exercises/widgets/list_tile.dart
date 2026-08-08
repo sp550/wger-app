@@ -18,9 +18,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:wger/core/i18n.dart';
+import 'package:wger/core/widgets/letter_badge.dart';
 import 'package:wger/features/exercises/models/exercise.dart';
 import 'package:wger/features/exercises/screens/exercise_screen.dart';
-import 'package:wger/features/exercises/widgets/images.dart';
 
 class ExerciseListTile extends StatelessWidget {
   const ExerciseListTile({super.key, required this.exercise});
@@ -29,30 +29,17 @@ class ExerciseListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const double IMG_SIZE = 64;
+    final categoryName = getServerStringTranslation(exercise.category.name, context);
 
     return ListTile(
-      leading: SizedBox(
-        height: IMG_SIZE,
-        width: IMG_SIZE,
-        child: CircleAvatar(
-          backgroundColor: const Color(0x00ffffff),
-          child: ClipOval(
-            child: SizedBox(
-              height: IMG_SIZE,
-              width: IMG_SIZE,
-              child: ExerciseImageWidget(image: exercise.getMainImage),
-            ),
-          ),
-        ),
-      ),
+      leading: LetterBadge(text: categoryName, size: 48),
       title: Text(
         exercise.getTranslation(Localizations.localeOf(context).languageCode).name,
         overflow: TextOverflow.ellipsis,
         maxLines: 2,
       ),
       subtitle: Text(
-        '${getServerStringTranslation(exercise.category.name, context)} / ${exercise.equipment.map((e) => getServerStringTranslation(e.name, context)).toList().join(', ')}',
+        '$categoryName / ${exercise.equipment.map((e) => getServerStringTranslation(e.name, context)).toList().join(', ')}',
       ),
       onTap: () {
         Navigator.pushNamed(context, ExerciseDetailScreen.routeName, arguments: exercise);

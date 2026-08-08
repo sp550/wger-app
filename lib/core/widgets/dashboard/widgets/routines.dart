@@ -26,10 +26,9 @@ import 'package:wger/core/widgets/async_value_widget.dart';
 import 'package:wger/core/widgets/core.dart';
 import 'package:wger/core/widgets/dashboard/widgets/nothing_found.dart';
 import 'package:wger/core/widgets/error.dart';
-import 'package:wger/features/exercises/models/exercise.dart';
+import 'package:wger/core/widgets/letter_badge.dart';
 import 'package:wger/features/routines/models/day_data.dart';
 import 'package:wger/features/routines/models/routine.dart';
-import 'package:wger/features/routines/models/set_config_data.dart';
 import 'package:wger/features/routines/providers/routines_notifier.dart';
 import 'package:wger/features/routines/screens/gym_mode.dart';
 import 'package:wger/features/routines/screens/routine_screen.dart';
@@ -61,6 +60,9 @@ class _DashboardRoutineWidgetState extends ConsumerState<DashboardRoutineWidget>
     Widget? child,
   }) {
     return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
       child: Column(
         children: [
           ListTile(
@@ -91,54 +93,17 @@ class _DashboardRoutineWidgetState extends ConsumerState<DashboardRoutineWidget>
     );
   }
 
-  /// Compact exercise summary: one row per exercise, with the set/reps/weight
-  /// information right-aligned and legible.
-  Widget _buildExerciseSummary(BuildContext context, DayData dayData) {
+  /// One-line exercise preview for the hero card: the first few exercise
+  /// names, joined, so the card reads as "today's plan" at a glance.
+  String _buildExercisePreview(BuildContext context, DayData dayData) {
     final locale = Localizations.localeOf(context).languageCode;
-    final theme = Theme.of(context);
-
-    final grouped = <Exercise, List<SetConfigData>>{};
+    final names = <String>{};
     for (final slot in dayData.slots) {
       for (final config in slot.setConfigs) {
-        grouped.putIfAbsent(config.exercise, () => []).add(config);
+        names.add(config.exercise.getTranslation(locale).name);
       }
     }
-
-    return Column(
-      children: grouped.entries.map((entry) {
-        final name = entry.key.getTranslation(locale).name;
-        final detail = entry.value.map((c) => c.textRepr).join(' + ');
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Text(
-                  name,
-                  style: theme.textTheme.titleMedium,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-              const SizedBox(width: 12),
-              Flexible(
-                child: Text(
-                  detail,
-                  textAlign: TextAlign.right,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
-                    fontFeatures: const [FontFeature.tabularFigures()],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
-      }).toList(),
-    );
+    return names.take(3).join(' · ');
   }
 
   /// The hero card content for a routine with a schedulable day.
@@ -159,8 +124,18 @@ class _DashboardRoutineWidgetState extends ConsumerState<DashboardRoutineWidget>
     final heroDay = today ?? days.where((d) => !d.day!.isRest).firstOrNull;
     final isRestDay = today?.day?.isRest ?? false;
 
+    // One-line plan preview: rest days (and not-yet-known days while the
+    // structure hydrates) collapse to the date, workout days show the first
+    // exercise names.
+    final subtitle = isRestDay || heroDay == null
+        ? dateFormat.format(heroDay?.date ?? routine.start)
+        : _buildExercisePreview(context, heroDay);
+
     return Card(
       clipBehavior: Clip.antiAlias,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -200,24 +175,35 @@ class _DashboardRoutineWidgetState extends ConsumerState<DashboardRoutineWidget>
               ],
             ),
             const SizedBox(height: 12),
-            if (isRestDay)
-              Text(i18n.restDay, style: theme.textTheme.headlineMedium)
-            else
-              Text(
-                heroDay?.day?.nameWithType ?? routine.name,
-                style: theme.textTheme.headlineMedium,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
-            const SizedBox(height: 4),
-            Text(
-              '${routine.name} · ${dateFormat.format(heroDay?.date ?? routine.start)}',
-              style: theme.textTheme.titleMedium?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
+            // Routine initial badge + name + one-line plan preview.
+            Row(
+              children: [
+                LetterBadge(text: routine.name, size: 52),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        isRestDay ? i18n.restDay : routine.name,
+                        style: theme.textTheme.headlineMedium,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        subtitle,
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 16),
-            if (heroDay != null && !isRestDay) _buildExerciseSummary(context, heroDay),
             const SizedBox(height: 16),
             if (heroDay != null && !isRestDay)
               SizedBox(
@@ -225,8 +211,10 @@ class _DashboardRoutineWidgetState extends ConsumerState<DashboardRoutineWidget>
                 child: PressableScale(
                   child: FilledButton.icon(
                     key: const ValueKey('dashboard-start-workout'),
+                    // Full-pill primary CTA (Progression parity).
                     style: FilledButton.styleFrom(
                       minimumSize: const Size.fromHeight(56),
+                      shape: const StadiumBorder(),
                       textStyle: theme.textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.w700,
                       ),

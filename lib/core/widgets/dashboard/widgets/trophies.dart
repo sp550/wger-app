@@ -43,6 +43,9 @@ class DashboardTrophiesWidget extends ConsumerWidget {
         children: [
           if (trophiesState.nonPrTrophies.isEmpty)
             Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
               child: Column(
                 children: [
                   ListTile(
@@ -99,6 +102,9 @@ class TrophyCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card.filled(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
       child: InkWell(
         onTap: () {
           Navigator.of(context).pushNamed(TrophyScreen.routeName);

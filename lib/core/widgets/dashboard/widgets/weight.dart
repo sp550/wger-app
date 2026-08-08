@@ -38,6 +38,9 @@ class DashboardWeightWidget extends ConsumerWidget {
 
   Widget _shell(BuildContext context, Widget body) {
     return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [

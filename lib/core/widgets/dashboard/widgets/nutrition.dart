@@ -45,6 +45,9 @@ class DashboardNutritionWidget extends ConsumerWidget {
     Widget? child,
   }) {
     return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
       child: Column(
         children: [
           ListTile(
@@ -102,6 +105,9 @@ class DashboardNutritionWidget extends ConsumerWidget {
         }
 
         return Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
           child: Column(
             children: [
               ListTile(

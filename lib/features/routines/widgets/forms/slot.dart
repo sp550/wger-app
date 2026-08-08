@@ -263,7 +263,7 @@ class _SlotFormWidgetStateNg extends ConsumerState<ReorderableSlotList> {
             }
 
             // Group visual: flush cards with rounded outer corners only
-            const double cardRadius = 12;
+            const double cardRadius = 20;
             final bool isFirst = info.indexInGroup == 0;
             final bool isLast = info.indexInGroup == info.groupSize - 1;
             final borderRadius = isGrouped
@@ -395,6 +395,9 @@ class _SlotFormWidgetStateNg extends ConsumerState<ReorderableSlotList> {
         ),
         if (!widget.day.isRest)
           Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
             child: ListTile(
               enabled: isOnline,
               leading: isAddingSlot ? const FormProgressIndicator() : const Icon(Icons.add),

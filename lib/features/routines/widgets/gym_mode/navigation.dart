@@ -30,10 +30,15 @@ class NavigationHeader extends StatelessWidget {
   final String _title;
   final bool showEndWorkoutButton;
 
+  /// Optional leading widget rendered between the close button and the
+  /// centered title (e.g. an exercise [LetterBadge] on the log page).
+  final Widget? leading;
+
   const NavigationHeader(
     this._title,
     this._controller, {
     this.showEndWorkoutButton = true,
+    this.leading,
     super.key,
   });
 
@@ -48,6 +53,10 @@ class NavigationHeader extends StatelessWidget {
             Navigator.of(context).pop();
           },
         ),
+        if (leading != null) ...[
+          leading!,
+          const SizedBox(width: 8),
+        ],
         Expanded(
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 8),
