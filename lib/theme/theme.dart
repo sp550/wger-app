@@ -42,18 +42,17 @@ const FlexSubThemesData wgerSubThemeData = FlexSubThemesData(
 );
 
 /// App-wide page transition: a fast, quiet Material fade+slide for pushes and
-/// pops on every platform, with the native Cupertino slide (and swipe-back
-/// gesture) kept on iOS and macOS. Applied once at the theme level so every
-/// route gets the same treatment instead of per-navigation hacks.
+/// pops on every platform. Applied once at the theme level so every route gets
+/// the same treatment instead of per-navigation hacks.
 ///
 /// The Material builders honour the "remove animations" accessibility setting
 /// themselves (they render the child directly when animations are disabled).
 const PageTransitionsTheme wgerPageTransitionsTheme = PageTransitionsTheme(
   builders: <TargetPlatform, PageTransitionsBuilder>{
     TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
-    TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+    TargetPlatform.iOS: FadeUpwardsPageTransitionsBuilder(),
     TargetPlatform.linux: FadeUpwardsPageTransitionsBuilder(),
-    TargetPlatform.macOS: CupertinoPageTransitionsBuilder(),
+    TargetPlatform.macOS: FadeUpwardsPageTransitionsBuilder(),
     TargetPlatform.windows: FadeUpwardsPageTransitionsBuilder(),
     TargetPlatform.fuchsia: FadeUpwardsPageTransitionsBuilder(),
   },
